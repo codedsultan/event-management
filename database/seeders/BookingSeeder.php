@@ -31,6 +31,17 @@ class BookingSeeder extends Seeder
             ]);
         }
 
+        $vendor1 = Vendor::factory()->create([
+            'name' => 'Colby',
+            'email' => 'colby@workwithmarque.com',
+        ]);
+
+        foreach($statuses as $status){
+            Booking::factory()->create([
+                'vendor_id' => $vendor1->id,
+                'status' => $status
+            ]);
+        }
 
         // Booking::factory()->create([
         //     'vendor_id' => $vendor->id,
