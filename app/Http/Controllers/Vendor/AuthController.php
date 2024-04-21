@@ -79,7 +79,7 @@ class AuthController extends Controller
         $creds = $request->only('email','password');
 
         if( Auth::guard('vendor')->attempt($creds) ){
-            return redirect()->route('vendor.home');
+            return redirect()->intended(route('vendor.home'));
         }else{
             return redirect()->route('vendor.login')->with('fail','Incorrect Credentials');
         }

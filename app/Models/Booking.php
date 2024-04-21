@@ -10,6 +10,10 @@ class Booking extends Model
     use HasFactory;
 
     protected $casts = [
-        'items_required' => 'array'
+        'items_required' => 'array',
+        'starts_at' => 'datetime',
+        'ends_at' => 'datetime',
+        'start_date' => 'datetime:Y-m-d',
+        'end_date' => 'datetime:Y-m-d',
     ];
 }

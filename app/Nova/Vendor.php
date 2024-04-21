@@ -1,24 +1,24 @@
 <?php
 
-
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
 use Laravel\Nova\Fields\Gravatar;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Password;
 use Laravel\Nova\Fields\Text;
 use Laravel\Nova\Http\Requests\NovaRequest;
+use Illuminate\Validation\Rules;
 
-class Organiser extends Resource
+
+class Vendor extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Organiser>
+     * @var class-string<\App\Models\Vendor>
      */
-    public static $model = \App\Models\Organiser::class;
+    public static $model = \App\Models\Vendor::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
@@ -33,7 +33,7 @@ class Organiser extends Resource
      * @var array
      */
     public static $search = [
-        'id',
+        'id', 'name', 'email',
     ];
 
     /**
@@ -56,8 +56,8 @@ class Organiser extends Resource
             Text::make('Email')
                 ->sortable()
                 ->rules('required', 'email', 'max:254')
-                ->creationRules('unique:organisers,email')
-                ->updateRules('unique:organisers,email,{{resourceId}}'),
+                ->creationRules('unique:users,email')
+                ->updateRules('unique:users,email,{{resourceId}}'),
 
             Password::make('Password')
                 ->onlyOnForms()

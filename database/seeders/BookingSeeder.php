@@ -18,20 +18,28 @@ class BookingSeeder extends Seeder
             'name' => 'Segun',
             'email' => 'segun@gmail.com',
         ]);
-
+        $statuses = ['pending', 'approved', 'invoice','rejected'];
         Booking::factory()->create([
             'vendor_id' => $vendor->id,
             // 'status' => 'approved'
         ]);
 
-        Booking::factory()->create([
-            'vendor_id' => $vendor->id,
-            'status' => 'approved'
-        ]);
+        foreach($statuses as $status){
+            Booking::factory()->create([
+                'vendor_id' => $vendor->id,
+                'status' => $status
+            ]);
+        }
 
-        Booking::factory()->create([
-            'vendor_id' => $vendor->id,
-            'status' => 'invoice'
-        ]);
+
+        // Booking::factory()->create([
+        //     'vendor_id' => $vendor->id,
+        //     'status' => 'invoice'
+        // ]);
+
+        // Booking::factory()->create([
+        //     'vendor_id' => $vendor->id,
+        //     'status' => 'rejected'
+        // ]);
     }
 }

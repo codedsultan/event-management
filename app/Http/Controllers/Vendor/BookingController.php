@@ -26,7 +26,7 @@ class BookingController extends Controller
         */
     public function create()
     {
-        //
+        return view('dashboard.vendor.booking.create');
     }
 
     /**
@@ -34,9 +34,35 @@ class BookingController extends Controller
         *
         * @return Response
         */
-    public function store()
+    public function store(Request $request)
     {
-        //
+        // dd()
+        $data =  $request->validate([
+            'name' => ['required','string'],
+            'description' => ['required','string'],
+            // 'start_date' => ['required','string','after:yesterday'],
+            // 'end_date' => ['nullable','string','after:start_date'],
+            // 'starts_at' => ['required','string'],
+            // 'ends_at' => ['nullable','string','after:starts_at'],
+            'start_date' => ['required','string'],
+            'end_date' => ['nullable','string'],
+            'starts_at' => ['required','string'],
+            'ends_at' => ['nullable','string'],
+            'items_required' => ['nullable', 'array']
+        ]);
+
+        $booking = new Booking();
+        $booking->name = $data['name'];
+        $booking->description = $data['description'];
+        $booking->start_date = $data['start_date'];
+        $booking->end_date = $data['end_date'];
+        $booking->starts_at = $data['starts_at'];
+        $booking->ends_at = $data['ends_at'];
+        $booking->items_required = $data['items_required'];
+        $booking->vendor_id = $request->user()->id;
+        $booking->save();
+
+        return redirect()->route('vendor.bookings')->with('success', 'Application successfull');
     }
 
     /**

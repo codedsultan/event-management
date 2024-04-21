@@ -41,12 +41,14 @@
             <span class="badge rounded-pill text-bg-success p-2 text-capitalize">{{$booking->status}}</span>
         @elseif($booking->status == "invoice")
             <span class="badge rounded-pill text-bg-info p-2 text-capitalize">{{$booking->status}}</span>
+        @elseif($booking->status == "rejected")
+            <span class="badge rounded-pill text-bg-danger p-2 text-capitalize">{{$booking->status}}</span>
         @endif
 
       </td>
       <td>
         <div class="dropdown">
-          <button class="btn btn-default dropdown-toggle" type="button"
+          <button class="btn btn-default dropdown-toggle w-100" type="button"
            data-bs-toggle="dropdown" aria-expanded="false">More</button>
           <ul class="dropdown-menu">
             <li>

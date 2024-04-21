@@ -10,14 +10,17 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,600&display=swap" rel="stylesheet" />
 
+
         <!-- Styles -->
 
         <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
         @stack('styles')
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="container-lg">
+    <body class="container-lg" >
         <nav class="navbar navbar-expand-lg">
             <div class="container-lg">
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarExample" aria-controls="navbarExample" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -29,8 +32,7 @@
                     <a class="nav-link" aria-current="page" href="/">Home</a>
                     @if(Auth::guard('customer')->check())
                         <a class="nav-link" aria-current="page" href="{{ route('user.home') }}">Dashboard</a>
-                    @elseif(Auth::guard('organiser')->check())
-                        <a class="nav-link" aria-current="page" href="{{ route('organiser.home') }}">Dashboard</a>
+
                     @elseif(Auth::guard('vendor')->check())
                         <a class="nav-link" aria-current="page" href="{{ route('vendor.home') }}">Dashboard</a>
                     @endif
@@ -48,26 +50,19 @@
                     </ul>
                     </li> -->
                 </ul>
-                <div>
+                <!-- <div>
                     <form class="me-2 mb-2 mb-lg-0">
                         <input type="text" class="form-control form-control-sm" placeholder="Search" />
                     </form>
-                 </div>
+                 </div> -->
 
                 <div>
-                    @if (!Auth::guard('customer')->check() && !Auth::guard('organiser')->check() && !Auth::guard('vendor')->check()  )
+                    @if (!Auth::guard('customer')->check() && !Auth::guard('vendor')->check()  )
                         <a
                             href="{{ route('user.login') }}"
                             class="btn btn-primary mx-2"
                         >
                             User Log in
-                        </a>
-
-                        <a
-                            href="{{ route('organiser.login') }}"
-                            class="btn btn-primary mx-2"
-                        >
-                            Organiser Log in
                         </a>
 
                         <a
@@ -123,6 +118,43 @@
         </main>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+
+
+@if($message = session('success'))
+    <div class="toast-container position-fixed top-0 end-0 p-6">
+    <div class="toast" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-body">
+        <div class="d-flex gap-4">
+            <span><i class="fa-solid fa-circle-check fa-lg icon-success"></i></span>
+            <div class="d-flex flex-column flex-grow-1 gap-2">
+            <div class="d-flex align-items-center">
+                <span class="fw-semibold">{{$message}}</span>
+                <button type="button" class="btn-close btn-close-sm ms-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>
+@endif
+<script>
+
+// window.onload = (event) => {
+    const toastLive = document.getElementById("liveToast");
+    const toast = new bootstrap.Toast(toastLive);
+    toast.show();
+    $('.toast').toast({})
+// };
+</script>
+    <footer class="py-3 my-4 border-top">
+        <!-- <ul class="nav justify-content-center border-bottom pb-3 mb-3"> -->
+        <!-- <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Home</a></li>
+        <li class="nav-item"><a href="#" class="nav-link px-2 text-muted">Events</a></li> -->
+
+        <!-- </ul> -->
+        <p class="text-center text-muted">&copy; <script>document.write(new Date().getFullYear())</script></p>
+    </footer>
     </body>
 </html>
 
@@ -132,4 +164,6 @@
     height: 50px;
 } */
 </style>
+
+
 

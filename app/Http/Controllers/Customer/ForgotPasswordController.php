@@ -20,7 +20,7 @@ class ForgotPasswordController extends Controller
     }
     public function sendResetLink(Request $request){
         $request->validate([
-            'email'=>'required|email|exists:users,email'
+            'email'=>'required|email|exists:customers,email'
         ]);
 
         $token = Str::random(64);
@@ -48,7 +48,7 @@ class ForgotPasswordController extends Controller
 
    public function resetPassword(Request $request){
         $request->validate([
-            'email'=>'required|email|exists:users,email',
+            'email'=>'required|email|exists:customers,email',
             'password'=>'required|min:5|confirmed',
             'password_confirmation'=>'required',
         ]);

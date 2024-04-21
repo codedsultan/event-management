@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('invoices', function (Blueprint $table) {
             $table->id();
+            $table->string('invoice_number')->nullable()->unique();
+            $table->integer('vendor_id')->nullable();
+            $table->integer('booking_id')->nullable();
+            $table->float('total_amount')->nullable();
+            $table->enum('status',['pending', 'paid'])->default('pending');
             $table->timestamps();
         });
     }

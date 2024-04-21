@@ -5,7 +5,7 @@
 
 <div class="layout">
   <main class="layout-main px-4">
-    <h4>User Dashboard</h4>
+    <div><h1>Dashboard</h1></div>
     <p>{{ Auth::guard('customer')->user()->name }}<p>
     <p>{{ Auth::guard('customer')->user()->email }}<p>
 

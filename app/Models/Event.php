@@ -60,7 +60,7 @@ class Event extends Model implements HasMedia
     {
         $this
             ->addMediaCollection('featured_image')
-            ->useFallbackUrl('/logooo.png')
+            ->useFallbackUrl('/retina.webp')
             // public/logooo.png
             ->singleFile();
 

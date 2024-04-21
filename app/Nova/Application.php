@@ -3,27 +3,28 @@
 namespace App\Nova;
 
 use Illuminate\Http\Request;
-use Laravel\Nova\Fields\ID;
-use Laravel\Nova\Http\Requests\NovaRequest;
-use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Fields\Badge;
 use Laravel\Nova\Fields\Date;
-use Laravel\Nova\Fields\DateTime;
+use Laravel\Nova\Fields\ID;
+use Laravel\Nova\Fields\Select;
+use Laravel\Nova\Fields\Text;
+use Laravel\Nova\Http\Requests\NovaRequest;
 
-class Event extends Resource
+class Application extends Resource
 {
     /**
      * The model the resource corresponds to.
      *
-     * @var class-string<\App\Models\Event>
+     * @var class-string<\App\Models\Booking>
      */
-    public static $model = \App\Models\Event::class;
+    public static $model = \App\Models\Booking::class;
 
     /**
      * The single value that should be used to represent the resource when being displayed.
      *
      * @var string
      */
-    public static $title = 'tittle';
+    public static $title = 'name';
 
     /**
      * The columns that should be searched.
@@ -31,7 +32,7 @@ class Event extends Resource
      * @var array
      */
     public static $search = [
-        'title'
+        'name',
     ];
 
     /**
@@ -44,14 +45,14 @@ class Event extends Resource
     {
         return [
             ID::make()->sortable(),
-            Text::make('Title')
+            Text::make('Name')
                 ->sortable()
                 ->onlyOnIndex()
                 ->displayUsing(function ($value) {
                     return substr($value, 0, 35) . '...';
                 }),
 
-            Text::make('Title')
+            Text::make('Name')
                 ->rules('required', 'string')
                 ->hideFromIndex(),
 
@@ -65,14 +66,6 @@ class Event extends Resource
             Text::make('Description')
                 ->rules('required', 'string')
                 ->hideFromIndex(),
-
-            // Text::make('Location')
-            //     ->sortable()
-            //     ->rules('required', 'string'),
-
-            // Text::make('Location Address')
-            //     ->sortable()
-            //     ->rules('required', 'string'),
 
             Date::make('Start Date')
                 ->sortable()
@@ -80,23 +73,39 @@ class Event extends Resource
 
             Date::make('End Date')
                 ->sortable()
+                ->hideFromIndex()
                 ->rules('string'),
 
             // DateTime::make('Start Time'),
             // DateTime::make('End Time'),
 
-            Text::make('Start Time')->resolveUsing(function ($date) {
+            Text::make('Starts At')->resolveUsing(function ($date) {
                 $timestamp = new \DateTime($date);
                 return $timestamp->format('H:i');
-            })->rules('date_format:"H:i"')->withMeta(['extraAttributes' => ['type' => 'time']]),
+            })->hideFromIndex()->rules('date_format:"H:i"')->withMeta(['extraAttributes' => ['type' => 'time']]),
 
-            Text::make('End Time')->resolveUsing(function ($date) {
+            Text::make('Ends At')->resolveUsing(function ($date) {
                 $timestamp = new \DateTime($date);
                 return $timestamp->format('H:i');
-            })->rules('date_format:"H:i"')->withMeta(['extraAttributes' => ['type' => 'time']]),
+            })->hideFromIndex()->rules('date_format:"H:i"')->withMeta(['extraAttributes' => ['type' => 'time']]),
 
+            Badge::make('Status')->map([
+                'rejected' => 'danger',
+                'pending' => 'info',
+                'invoice' => 'warning',
+                'approved' => 'success',
+            ]),
 
-
+            // Select::make('Status')->options([
+            //     'Rejected' => 'rejected',
+            //     'Pending' => 'pending',
+            //     'Invoice' => 'invoice',
+            //     'Approved' => 'approved',
+            // ])->displayUsingLabels()->hideFromIndex(),
+            // Text::make('status')
+            //     ->sortable()
+            //     ->hideFromIndex()
+            //     ->rules('required', 'string'),
 
         ];
     }

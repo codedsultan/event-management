@@ -26,8 +26,8 @@ class BookingFactory extends Factory
             'questions' => fake()->paragraph(),
             'vendor_id' => Vendor::factory() ?? Vendor::inRandomOrder()->first()->id,
             'items_required' => ['band','microphone','drinks'],
-            'start_at' => now(),
-            'end_at' => now()->addHours(5)
+            'starts_at' => now(),
+            'ends_at' => now()->addHours(5)
         ];
     }
 }
