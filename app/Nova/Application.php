@@ -152,12 +152,16 @@ class Application extends Resource
     public function actions(NovaRequest $request)
     {
         return [
-            (new Actions\CreateApplicationInvoice)->canSee(function () {
-                return $this->resource->status == 'approved';
-            })->sole()->showInline(),
-            (new Actions\ApproveApplication)->canSee(function () {
-                return $this->resource->status == 'pending';
-            })->sole()->showInline()
+            (new Actions\CreateApplicationInvoice)
+            // ->canSee(function () {
+            //     return $this->resource->status == 'approved';
+            // })
+            ->sole()->showInline(),
+            (new Actions\ApproveApplication)
+            // ->canSee(function () {
+            //     return $this->resource->status == 'pending';
+            // })
+            ->sole()->showInline()
         ];
     }
 }
