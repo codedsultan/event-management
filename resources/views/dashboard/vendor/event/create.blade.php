@@ -1,5 +1,5 @@
 
-@extends('layouts.organiser')
+@extends('layouts.vendor')
 @section('maincontent')
 <div><h1>Create Events</h1></div>
 <div class="w-50">

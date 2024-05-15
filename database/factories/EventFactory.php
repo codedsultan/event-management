@@ -43,7 +43,7 @@ class EventFactory extends Factory
             'end_date' => now()->addDays(14)->toDate(),
             'start_time' => now(),
             'end_time' => now()->addHours(5),
-            'organiser_id' => Organiser::factory() ?? Organiser::inRandomOrder()->first()->id,
+            'vendor_id' => Organiser::factory() ?? Organiser::inRandomOrder()->first()->id,
             'venue_name' => fake()->word(),
             'location' => fake()->city(),
             'location_address' => fake()->address()

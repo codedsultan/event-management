@@ -21,11 +21,12 @@ return new class extends Migration
             $table->date('end_date')->nullable();
             $table->timestamp('start_time')->nullable();
             $table->timestamp('end_time')->nullable();
-            $table->integer('organiser_id')->index();
+            $table->integer('vendor_id')->index();
             // $table->foreign('organiser_id')->references('id')->on('organisers');
             $table->string('venue_name')->nullable();
             // $table->string('venue_name_full')->nullable();
             $table->string('location')->nullable();
+            $table->integer('location_id')->index()->nullable();
             $table->string('location_address')->nullable();
             $table->timestamps();
         });

@@ -21,7 +21,7 @@
                 up to speed and in the right place
                 </p>
 
-                <a href="{{route('vendor.create.bookings')}}" class="btn btn-primary">Apply for space</a>
+                <a href="{{route('vendor.create.bookings',1)}}" class="btn btn-primary">Apply for space</a>
 
             </div>
         </div>

@@ -4,18 +4,18 @@
 
 <div class="d-flex justify-content-between">
   <div><h1>Applications</h1></div>
-  <div>
+  <!-- <div>
     <a
-    href="{{ route('vendor.create.bookings') }}"
+    href="#"
     class="btn btn-primary"
     >
         Create Application
     </a>
-</div>
+</div> -->
 
 </div>
 
-<div class="table-responsive mt-10 border">
+<div class="mt-10 border">
 <table class="table table-hover table-striped table-borderless">
   <thead>
     <tr>
@@ -38,11 +38,13 @@
         @if($booking->status == "pending")
             <span class="badge rounded-pill text-bg-secondary p-2 text-capitalize">{{$booking->status}}</span>
         @elseif($booking->status == "approved")
-            <span class="badge rounded-pill text-bg-success p-2 text-capitalize">{{$booking->status}}</span>
-        @elseif($booking->status == "invoice")
             <span class="badge rounded-pill text-bg-info p-2 text-capitalize">{{$booking->status}}</span>
+        @elseif($booking->status == "invoice")
+            <span class="badge rounded-pill text-bg-warning p-2 text-capitalize">{{$booking->status}}</span>
         @elseif($booking->status == "rejected")
             <span class="badge rounded-pill text-bg-danger p-2 text-capitalize">{{$booking->status}}</span>
+        @elseif($booking->status == "completed")
+            <span class="badge rounded-pill text-bg-success p-2 text-capitalize">{{$booking->status}}</span>
         @endif
 
       </td>
@@ -53,10 +55,10 @@
           <ul class="dropdown-menu">
             <li>
 
-              <a class="dropdown-item" href="#">View Application</a>
+              <a class="dropdown-item" href="{{route('vendor.show.booking',$booking->id)}}">View Application</a>
               <!-- <a class="dropdown-item" href="#">View Tickets</a> -->
               @if($booking->status == "invoice")
-              <a class="dropdown-item" href="#">Invoice</a>
+              <a class="dropdown-item" href="{{ route('vendor.show.invoice',isset($booking->invoice->id)? $booking->invoice->id :'#') }}">Invoice</a>
               @endif
             </li>
           </ul>

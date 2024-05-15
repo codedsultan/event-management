@@ -8,6 +8,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Vendor extends Authenticatable
 {
@@ -56,7 +57,13 @@ class Vendor extends Authenticatable
         return $this->hasMany(Event::class);
     }
 
-
+/**
+     * Get the events for the organiser.
+     */
+    public function api_key(): HasOne
+    {
+        return $this->hasOne(ApiKey::class);
+    }
     /**
      * Get all of the tickets for the organiser.
      */

@@ -5,6 +5,9 @@ use App\Http\Controllers\Vendor\BookingController;
 use App\Http\Controllers\Vendor\DashboardController;
 use App\Http\Controllers\Vendor\EventController;
 use App\Http\Controllers\Vendor\ForgotPasswordController;
+use App\Http\Controllers\Vendor\InvoiceController;
+use App\Http\Controllers\Vendor\InvoicePaymentController;
+use App\Http\Controllers\Vendor\TicketController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -31,20 +34,37 @@ Route::prefix('vendor')->name('vendor.')->group(function(){
         Route::post('/logout',[AuthController::class,'logout'])->name('logout');
 
 
+        Route::get('location/{location}/applications/create', [BookingController::class, 'create'])->name('create.bookings');
         Route::get('/applications', [BookingController::class, 'index'])->name('bookings');
-        Route::get('/applications/create', [BookingController::class, 'create'])->name('create.bookings');
+        Route::get('/applications/{booking}', [BookingController::class, 'show'])->name('show.booking');
+        // Route::get('/applications/create', [BookingController::class, 'create'])->name('create.bookings');
         Route::post('/applications', [BookingController::class, 'store'])->name('store.bookings');
 
-        // Route::get('/events', [EventController::class, 'index'])->name('events');
-        // Route::get('/events/create', [EventController::class, 'create'])->name('create.events');
-        // Route::post('/events', [EventController::class, 'store'])->name('store.events');
-        // Route::get('/events/{id}', [EventController::class, 'show'])->name('show.events');
-        // Route::get('/events/{id}/edit', [EventController::class, 'edit'])->name('edit.events');
-        // Route::put('/events/{id}', [EventController::class, 'update'])->name('update.events');
-        // Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('destroy.events');
+
+        Route::get('/invoice/{invoice}', [InvoiceController::class, 'show'])->name('show.invoice');
+
+        Route::post('/pay/invoice/{invoice}', [InvoicePaymentController::class, 'pay'])->name('pay.invoice');
+
+        Route::post('/pay/invoice/{invoice}', [InvoicePaymentController::class, 'pay'])->name('pay.invoice');
+
+        Route::get('/events', [EventController::class, 'index'])->name('events');
+        Route::get('/events/create', [EventController::class, 'create'])->name('create.events');
+        Route::post('/events', [EventController::class, 'store'])->name('store.events');
+        Route::get('/events/{id}', [EventController::class, 'show'])->name('show.events');
+        Route::get('/events/{id}/edit', [EventController::class, 'edit'])->name('edit.events');
+        Route::put('/events/{id}', [EventController::class, 'update'])->name('update.events');
+        Route::delete('/events/{id}', [EventController::class, 'destroy'])->name('destroy.events');
+
+
+        Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets');
+        Route::get('/events/{event}/tickets/create', [TicketController::class, 'create'])->name('create.tickets');
+        Route::post('/events/{event}/tickets', [TicketController::class, 'store'])->name('store.tickets');
     });
 
-
+    Route::controller(InvoicePaymentController::class)->group(function(){
+        Route::get('stripe/checkout', 'stripeCheckout')->name('stripe.checkout');
+        Route::get('stripe/checkout/success', 'stripeCheckoutSuccess')->name('stripe.checkout.success');
+    });
 
 
 });

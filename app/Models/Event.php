@@ -45,6 +45,13 @@ class Event extends Model implements HasMedia
         return $this->belongsTo(Organiser::class);
     }
 
+     /**
+     * Get the organiser that owns the event.
+     */
+    public function vendor(): BelongsTo
+    {
+        return $this->belongsTo(Vendor::class);
+    }
 
     public function featuredImage(): Attribute
     {

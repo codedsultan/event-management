@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Vendor;
 use App\Http\Controllers\Controller;
+use App\Models\Event;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 
 class TicketController extends Controller
@@ -11,9 +13,12 @@ class TicketController extends Controller
     *
     * @return Response
     */
-    public function index()
+    public function index(Event $event)
     {
-        //
+        $event->load('tickets');
+        $tickets = $event->tickets;
+
+        return view('dashboard.vendor.tickets.index', compact('event','tickets'));
     }
 
     /**
@@ -21,9 +26,9 @@ class TicketController extends Controller
         *
         * @return Response
         */
-    public function create()
+    public function create(Event $event)
     {
-        //
+        return view('dashboard.vendor.tickets.create', compact('event'));
     }
 
     /**
@@ -31,9 +36,23 @@ class TicketController extends Controller
         *
         * @return Response
         */
-    public function store()
+    public function store(Event $event,Request $request)
     {
-        //
+        $data = $request->validate([
+            'type' => ['string'],
+            'price' => ['numeric'],
+            'quantity' => ['integer'],
+        ]);
+
+        $ticket = new Ticket();
+        $ticket->title = $data['type'];
+        $ticket->type = $data['type'];
+        $ticket->quantity_available = isset($data['quantity']) ? $data['quantity'] : null ;
+        $ticket->price = $data['price'];
+        $ticket->event_id = $event->id;
+        $ticket->save();
+        return redirect()->route('vendor.tickets',($event->id))->with('success','Ticket has been Created successfully');
+
     }
 
     /**

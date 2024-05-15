@@ -21,4 +21,10 @@ class EventController extends Controller
         return view('event.show',compact('event'));
     }
 
+    public function iframe(){
+        $events = Event::orderBy('id','desc')->paginate(3);
+        // dd($events[0]->featured_image);
+        // dd(!Auth::guard('organiser')->check());
+        return view('iframeevents',compact('events'));
+    }
 }

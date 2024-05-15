@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Booking;
+use App\Models\Invoice;
 use App\Models\Vendor;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -30,4 +32,18 @@ class BookingFactory extends Factory
             'ends_at' => now()->addHours(5)
         ];
     }
+
+
+    public function configure()
+    {
+        return $this->afterCreating(function (Booking $booking) {
+            if($booking->status === 'invoice')
+            {
+                Invoice::factory()->create([
+                    'booking_id' => $booking->id,
+                ]);
+            }
+        });
+    }
+
 }

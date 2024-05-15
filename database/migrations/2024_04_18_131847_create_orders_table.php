@@ -19,7 +19,7 @@ return new class extends Migration
             // $table->float('coupon')->nullable();
             $table->float('total_amount');
             $table->integer('quantity');
-            $table->enum('payment_method',['cod','paypal'])->default('cod');
+            $table->enum('payment_method',['cod','paypal','stripe'])->default('stripe');
             $table->enum('payment_status',['paid','unpaid'])->default('unpaid');
             $table->enum('status',['new','process','cancel'])->default('new');
             $table->string('first_name')->nullable();

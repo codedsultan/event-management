@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Vendor;
 
 use App\Http\Controllers\Controller;
 use App\Models\Booking;
+use App\Models\Location;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -15,7 +16,7 @@ class BookingController extends Controller
     */
     public function index(Request $request)
     {
-        $bookings = Booking::where('vendor_id',$request->user()->id)->orderBy('id','desc')->paginate(20);
+        $bookings = Booking::where('vendor_id',$request->user()->id)->with('invoice')->orderBy('id','desc')->paginate(20);
         return view('dashboard.vendor.booking.index', compact('bookings'));
     }
 
@@ -24,9 +25,9 @@ class BookingController extends Controller
         *
         * @return Response
         */
-    public function create()
+    public function create(Request $request,Location $location)
     {
-        return view('dashboard.vendor.booking.create');
+        return view('dashboard.vendor.booking.create', compact('location'));
     }
 
     /**
@@ -71,9 +72,11 @@ class BookingController extends Controller
         * @param  int  $id
         * @return Response
         */
-    public function show($id)
+    public function show(Booking $booking)
     {
-        //
+        $booking->load('location');
+        // dd($booking);
+        return view('dashboard.vendor.booking.show', compact('booking'));
     }
 
     /**

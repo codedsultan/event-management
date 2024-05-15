@@ -18,7 +18,7 @@ class BookingSeeder extends Seeder
             'name' => 'Segun',
             'email' => 'segun@gmail.com',
         ]);
-        $statuses = ['pending', 'approved', 'invoice','rejected'];
+        $statuses = ['pending', 'approved', 'invoice','invoice','invoice','rejected'];
         Booking::factory()->create([
             'vendor_id' => $vendor->id,
             // 'status' => 'approved'

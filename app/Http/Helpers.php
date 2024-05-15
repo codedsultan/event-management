@@ -2,6 +2,7 @@
 
 use App\Models\Order;
 use App\Models\Cart;
+use App\Models\InvoiceItem;
 use Illuminate\Support\Facades\Auth;
 
 // use Auth;
@@ -47,6 +48,16 @@ class Helper {
         }
     }
 
+
+    public static function totalInvoicePrice($id){
+        // if(Auth::guard('customer')->check()){
+            // if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
+            return InvoiceItem::where('invoice_id',$id)->sum('price');
+        // }
+        // else{
+        //     return 0;
+        // }
+    }
 
 
     // Total price with shipping and coupon

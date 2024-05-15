@@ -94,6 +94,7 @@ class Application extends Resource
                 'pending' => 'info',
                 'invoice' => 'warning',
                 'approved' => 'success',
+                'completed' => 'success',
             ]),
 
             // Select::make('Status')->options([
@@ -156,7 +157,7 @@ class Application extends Resource
             // ->canSee(function () {
             //     return $this->resource->status == 'approved';
             // })
-            ->sole()->showInline(),
+            ->sole()->showInline()->size('7xl'),
             (new Actions\ApproveApplication)
             // ->canSee(function () {
             //     return $this->resource->status == 'pending';

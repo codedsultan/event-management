@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->enum('status',['pending', 'approved', 'invoice','rejected'])->default('pending');
+            $table->enum('status',['pending', 'approved', 'invoice','rejected','completed'])->default('pending');
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->text('questions')->nullable();
             $table->integer('vendor_id')->index();
+            $table->integer('location_id')->index()->default(1);
             $table->json('items_required')->nullable();
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();

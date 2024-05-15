@@ -2,10 +2,13 @@
 
 namespace App\Nova;
 
+use App\Nova\Repeater\LineItem;
 use Illuminate\Http\Request;
 use Laravel\Nova\Fields\Badge;
+use Laravel\Nova\Fields\HasMany;
 use Laravel\Nova\Fields\ID;
 use Laravel\Nova\Fields\Number;
+use Laravel\Nova\Fields\Repeater;
 use Laravel\Nova\Http\Requests\NovaRequest;
 
 class Invoice extends Resource
@@ -42,13 +45,18 @@ class Invoice extends Resource
     public function fields(NovaRequest $request)
     {
         return [
-            ID::make()->sortable(),
+            HasMany::make('Invoice Items'),
+            ID::make(),
+			Repeater::make('Invoice Items')
+				->repeatables([
+					LineItem::make(),
+				]),
             Badge::make('Status')->map([
                 'pending' => 'info',
                 'paid' => 'success',
             ]),
 
-            Number::make('Total Amount'),
+            // Number::make('Total Amount'),
         ];
     }
 

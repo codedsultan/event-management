@@ -12,8 +12,10 @@
 
 
         <!-- Styles -->
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <link href="https://cdn.jsdelivr.net/npm/fastbootstrap@2.2.0/dist/css/fastbootstrap.min.css" rel="stylesheet" integrity="sha256-V6lu+OdYNKTKTsVFBuQsyIlDiRWiOmtC8VQ8Lzdm2i4=" crossorigin="anonymous">
+        <!-- <link href="{{asset('css/app.css')}}" rel="stylesheet"> -->
         @stack('styles')
     </head>
     <body class="container-lg" >
@@ -56,6 +58,15 @@
                  </div> -->
 
                 <div>
+                <!-- <span>{{count(Helper::getAllProductFromCart())}} Items</span> -->
+                <!-- <a href="{{route('cart')}}">View Cart</a> -->
+                <a href="{{route('cart')}}" class="btn btn-primary position-relative">
+                    Cart
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
+                        {{count(Helper::getAllProductFromCart())}}
+                        <span class="visually-hidden">items</span>
+                    </span>
+                </a>
                     @if (!Auth::guard('customer')->check() && !Auth::guard('vendor')->check()  )
                         <a
                             href="{{ route('user.login') }}"
@@ -109,10 +120,12 @@
 
                 </div>
                 </div>
+
             </div>
         </nav>
 
         <main class="py-4">
+
             @yield('content')
         </main>
 
@@ -154,6 +167,8 @@
         <!-- </ul> -->
         <p class="text-center text-muted">&copy; <script>document.write(new Date().getFullYear())</script></p>
     </footer>
+
+    @stack('scripts')
     </body>
 </html>
 

@@ -5,6 +5,7 @@ use Illuminate\Http\Request;
 
 use App\Models\Cart;
 use App\Models\Ticket;
+use Helper;
 
 class CartController extends Controller
 {
@@ -13,6 +14,15 @@ class CartController extends Controller
         $this->ticket=$ticket;
     }
 
+    public function index(Request $request)
+    {
+        if(empty(Cart::where('customer_id',$request->user()->id)->where('order_id',null)->first())){
+            request()->session()->flash('success','Cart is Empty !');
+            return back();
+        }
+        // dd(Helper::getAllProductFromCart());
+        return view('dashboard.user.cart');
+    }
     public function addToCart(Request $request){
 
 
@@ -115,11 +125,11 @@ class CartController extends Controller
 
     public function cartUpdate(Request $request){
         // dd($request->all());
-        if($request->quant){
+        if($request->qty){
             $error = array();
             $success = '';
             // return $request->quant;
-            foreach ($request->quant as $k=>$quant) {
+            foreach ($request->qty as $k=>$quant) {
                 // return $k;
                 $id = $request->qty_id[$k];
                 // return $id;
@@ -134,7 +144,7 @@ class CartController extends Controller
                     // }
                     // $cart->quantity = ($cart->ticket->stock > $quant) ? $quant  : $cart->product->stock;
                     // return $cart;
-
+                    $cart->quantity = $quant;
                     // if ($cart->product->stock <=0) continue;
                     $after_price=$cart->ticket->price;
                     // $after_price=($cart->product->price-($cart->product->price*$cart->product->discount)/100);

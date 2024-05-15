@@ -44,4 +44,10 @@ class Customer extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+
+    public function tickets()
+    {
+        return $this->belongsToMany(Ticket::class);
+    }
 }

@@ -2,9 +2,10 @@
 @extends('layouts.vendor')
 @section('maincontent')
 <div><h1>Create Application</h1></div>
-<div class="w-50">
-<form action="{{ route('vendor.store.bookings') }}" method="post"  enctype="multipart/form-data" id="create-event">
-@csrf
+<div class="row">
+  <div class="col">
+  <form action="{{ route('vendor.store.bookings') }}" method="post"  enctype="multipart/form-data" id="create-event">
+    @csrf
     <span class="text-danger">@error('name') {{ $message }} @enderror</span>
     <div class="input-group mb-3">
         <span class="input-group-text w-25" id="basic-addon1">Name</span>
@@ -83,8 +84,24 @@
 
     <button type="submit" class="btn btn-primary mt-3 w-100">Create</button>
 
-</form>
+    </form>
+  </div>
+  <div class="col">
 
+  <img class="border " src="/retina.webp"  width="100%" height="300" alt="project-image" class="rounded" />
+  <div class="card-body">
+    <h1>{{$location->name}}</h1>
+    <p class="card-text text-justify">{{$location->description}}</p>
+  </div>
+
+
+  </div>
 </div>
+
+
+
+
+
+
 @endsection
 
