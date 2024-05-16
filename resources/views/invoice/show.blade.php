@@ -134,7 +134,7 @@
 </table>
 <div class="text-end">
     <a class="btn btn-primary" href="{{ route('vendor.pay.invoice',$invoice->id) }}" onclick="event.preventDefault();document.getElementById('payment-form').submit();">Pay Invoice</a>
-                                     <form action="{{ route('vendor.pay.invoice',$invoice->id) }}" id="payment-form" method="post">@csrf</form>
+    <form action="{{ route('vendor.pay.invoice',$invoice->id) }}" id="payment-form" method="post">@csrf</form>
     <!-- <button class="btn btn-primary">
         Pay Invoice
     </button> -->
