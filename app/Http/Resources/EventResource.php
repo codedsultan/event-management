@@ -19,12 +19,20 @@ class EventResource extends JsonResource
             'name' => $this->title,
             'details' => $this->description,
             'bg_image_path' =>$this->bg_image_path ?? 'https://staging.theyardtsc.com/retina.webp' ,
-            'start_date' =>$this->start_date,
-            'end_date' =>$this->end_date,
-            'start_time' =>$this->start_time,
-            'end_time' =>$this->end_time,
+            'start_date' =>now()->parse($this->start_date)->toFormattedDateString(),
+            'end_date' =>now()->parse($this->end_date)->toFormattedDateString(),
+            'start_time' =>now()->parse($this->start_time)->toTimeString(),
+            'end_time' => now()->parse($this->end_time)->toTimeString(),
             'location' =>$this->location,
             'link' => route('event.show',$this->id)
+
+            // echo $date->toFormattedDateString();
+// Jun 22, 2020
+
+// echo $date->toTimeString();
+// 19:45:23
+
+// echo $date->toDayDateTimeString();
         ];
     }
 }
