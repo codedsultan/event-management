@@ -14,10 +14,7 @@ class BookingSeeder extends Seeder
      */
     public function run(): void
     {
-        $vendor = Vendor::factory()->create([
-            'name' => 'Segun',
-            'email' => 'segun@gmail.com',
-        ]);
+        $vendor = Vendor::whereEmail('segun@gmail.com')->first();
         $statuses = ['pending', 'approved', 'invoice','invoice','invoice','rejected'];
         Booking::factory()->create([
             'vendor_id' => $vendor->id,
@@ -31,10 +28,11 @@ class BookingSeeder extends Seeder
             ]);
         }
 
-        $vendor1 = Vendor::factory()->create([
-            'name' => 'Colby',
-            'email' => 'colby@workwithmarque.com',
-        ]);
+        $vendor1 = Vendor::whereEmail('colby@workwithmarque.com')->first();
+        // Vendor::factory()->create([
+        //     'name' => 'Colby',
+        //     'email' => 'colby@workwithmarque.com',
+        // ]);
 
         foreach($statuses as $status){
             Booking::factory()->create([

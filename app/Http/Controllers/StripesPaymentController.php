@@ -34,7 +34,7 @@ class StripePaymentController extends Controller
         $stripe = new \Stripe\StripeClient(Helper::getVendorAPiKey($request->vendor_id));
         // new \Stripe\StripeClient(env('STRIPE_SECRET'));
 
-        $redirectUrl = route('vendor.stripe.success',['vendor' => $request->vendor_id]).'?session_id={CHECKOUT_SESSION_ID}';
+        $redirectUrl = route('stripe.checkout.success').'?session_id={CHECKOUT_SESSION_ID}';
         $response =  $stripe->checkout->sessions->create([
                 'success_url' => $redirectUrl,
                 'customer_email' => $request->customer_email,
@@ -75,9 +75,9 @@ class StripePaymentController extends Controller
      *
      * @return response()
      */
-    public function stripeCheckoutSuccess($vendor,Request $request)
+    public function stripeCheckoutSuccess(Request $request)
     {
-        $stripe = new \Stripe\StripeClient(Helper::getVendorAPiKey(intval($vendor)));
+        $stripe = new \Stripe\StripeClient(env('STRIPE_SECRET'));
 
         $session = $stripe->checkout->sessions->retrieve($request->session_id);
         // dd($session->metadata);

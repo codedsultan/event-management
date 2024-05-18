@@ -7,8 +7,9 @@ use Illuminate\Http\Request;
 class CheckoutController extends Controller
 {
     public function checkout(Request $request){
-
-        return view('checkout');
+        // dd($request->vendor);
+        $vendor = $request->vendor;
+        return view('checkouts',compact('vendor'));
     }
 
 }

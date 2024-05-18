@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ApiKey extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'stripe',
+        'vendor_id'
+    ];
 }

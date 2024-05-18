@@ -8,6 +8,7 @@
         "php": "^8.2",
         "64robots/nova-fields": "^0.22.0",
         "laravel/framework": "^11.0",
+        "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.9",
         "spatie/laravel-medialibrary": "^11.4",
         "stepanenko3/nova-json": "^4.0",

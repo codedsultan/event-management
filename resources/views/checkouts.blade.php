@@ -2,7 +2,7 @@
 @section('content')
 <section class="shop checkout section">
         <div class="container">
-                <form class="form" method="POST" action="{{route('cart.order')}}">
+                <form class="form" method="POST" action="{{route('cart.order',['vendor'=> intval($vendor)])}}">
                     @csrf
                     <div class="row">
 
@@ -350,12 +350,12 @@
                                     <h2>CART  TOTALS</h2>
                                     <div class="content">
                                         <ul>
-										    <li class="order_subtotal" data-price="{{Helper::totalCartPrice()}}">Cart Subtotal<span>${{number_format(Helper::totalCartPrice(),2)}}</span></li>
+										    <li class="order_subtotal" data-price="{{Helper::totalVendorCartPrice('',$vendor)}}">Cart Subtotal<span>${{number_format(Helper::totalVendorCartPrice('',$vendor),2)}}</span></li>
 
 
 
 
-                                                <li class="last"  id="order_total_price">Total<span>${{number_format(Helper::totalCartPrice(),2)}}</span></li>
+                                                <li class="last"  id="order_total_price">Total<span>${{number_format(Helper::totalVendorCartPrice('',$vendor),2)}}</span></li>
 
                                         </ul>
                                     </div>

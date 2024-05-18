@@ -43,27 +43,26 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->vendor);
+        // dd();
         $data = $request->validate([
                     'email' => ['required','string','email']
                 ]);
-        $vendor = intval($request->vendor);
-        if(empty(Cart::where('customer_id',$request->user()->id)->where('order_id',null)->where('vendor_id',$vendor)->first())){
+
+        if(empty(Cart::where('customer_id',$request->user()->id)->where('order_id',null)->first())){
             request()->session()->flash('error','Cart is Empty !');
             return back();
         }
 
-        $vendor = intval($request->vendor);
+
         $order=new Order();
         $order_data=$request->all();
         // dd($data['email']);
         $order_data['order_number']='ORD-'.strtoupper(Str::random(10));
         $order_data['customer_id']=$request->user()->id;
-        $order_data['sub_total']=Helper::totalVendorCartPrice('',$vendor);
-        $order_data['total_amount']=Helper::totalVendorCartPrice('',$vendor);
+        $order_data['sub_total']=Helper::totalCartPrice();
+        $order_data['total_amount']=Helper::totalCartPrice();
         $order_data['quantity']=Helper::cartCount();
-        $order_data['vendor_id']= $vendor;
-        // Helper::getVendorId();
+        $order_data['vendor_id']=Helper::getVendorId();
 
         $order_data['status']="new";
         // if(request('payment_method')=='paypal'){
@@ -93,7 +92,7 @@ class OrderController extends Controller
         //     session()->forget('cart');
         //     // session()->forget('coupon');
         // }
-        Cart::where('customer_id', $request->user()->id)->where('order_id', null)->where('vendor_id',$vendor)->update(['order_id' => $order->id]);
+        Cart::where('customer_id', $request->user()->id)->where('order_id', null)->update(['order_id' => $order->id]);
 
         // dd($users);
         request()->session()->flash('success','Your ticket successfully placed in order');

@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('order_number')->unique();
             $table->integer('customer_id')->nullable();
+            $table->integer('vendor_id')->nullable();
             $table->float('sub_total');
             // $table->float('coupon')->nullable();
             $table->float('total_amount');

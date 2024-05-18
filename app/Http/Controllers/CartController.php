@@ -20,8 +20,11 @@ class CartController extends Controller
             request()->session()->flash('success','Cart is Empty !');
             return back();
         }
-        // dd(Helper::getAllProductFromCart());
-        return view('dashboard.user.cart');
+        // foreach(Helper::getAllVendorProductFromCart() as $x => $y){
+        //     echo($x);
+        // }
+
+        return view('dashboard.user.carts');
     }
     public function addToCart(Request $request){
 
@@ -73,7 +76,7 @@ class CartController extends Controller
         // dd($request->qty);
 
 
-        $ticket = Ticket::where('id', $request->id)->first();
+        $ticket = Ticket::where('id', $request->id)->with('event')->first();
         // if($ticket->stock <$request->qty){
         //     return back()->with('error','Out of stock, You can add other ticket.');
         // }
@@ -102,6 +105,7 @@ class CartController extends Controller
             $cart->ticket_id = $ticket->id;
             // $cart->price = ($ticket->price-($ticket->price*$ticket->discount)/100);
             $cart->price = $ticket->price;
+            $cart->vendor_id = $ticket->event->vendor_id;
             $cart->quantity = $request->qty;
             $cart->amount=($ticket->price * $request->qty);
             // if ($cart->product->stock < $cart->quantity || $cart->product->stock <= 0) return back()->with('error','Stock not sufficient!.');
@@ -124,7 +128,7 @@ class CartController extends Controller
     }
 
     public function cartUpdate(Request $request){
-        // dd($request->all());
+        dd($request->all());
         if($request->qty){
             $error = array();
             $success = '';

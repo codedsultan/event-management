@@ -77,7 +77,7 @@
 							<div class=" col-12">
 								<div class="right">
 									<!-- <ul> -->
-										<p class="order_subtotal" data-price="{{Helper::totalCartPrice()}}">Cart Subtotal<span class="px-8">${{number_format(Helper::totalCartPrice(),2)}}</span></p>
+										<p class="order_subtotal" data-price="{{Helper::totalCartPrice()}}">Cart Subtotal<span class="px-">${{number_format(Helper::totalCartPrice(),2)}}</span></p>
 									<!-- </ul> -->
 									<div class="button5">
 										<a href="{{route('checkout')}}" class="btn">Checkout</a>

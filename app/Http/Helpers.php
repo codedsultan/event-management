@@ -3,6 +3,7 @@
 use App\Models\Order;
 use App\Models\Cart;
 use App\Models\InvoiceItem;
+use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
 
 // use Auth;
@@ -37,6 +38,20 @@ class Helper {
             return [];
         }
     }
+
+    public static function getAllVendorProductFromCart($user_id=''){
+        if(Auth::guard('customer')->check()){
+            if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
+            return Cart::with('ticket')->where('customer_id',$user_id)->where('order_id',null)->get()->groupBy('vendor_id');
+            // ->groupBy(function($data) {
+            //     return $data->timezone;
+            // });
+
+        }
+        else{
+            return [];
+        }
+    }
     // Total amount cart
     public static function totalCartPrice($user_id=''){
         if(Auth::guard('customer')->check()){
@@ -48,6 +63,25 @@ class Helper {
         }
     }
 
+    // public static function totalVendorCartPrice($user_id='',$vendor_id){
+    //     if(Auth::guard('customer')->check()){
+    //         if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
+    //         return Cart::where('customer_id',$user_id)->where('order_id',null)->where('vendor_id')->sum('amount');
+    //     }
+    //     else{
+    //         return 0;
+    //     }
+    // }
+
+    public static function totalVendorCartPrice($user_id='',$vendor_id=""){
+        if(Auth::guard('customer')->check()){
+            if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
+            return Cart::where('customer_id',$user_id)->where('order_id',null)->where('vendor_id',$vendor_id)->sum('amount');
+        }
+        else{
+            return 0;
+        }
+    }
 
     public static function totalInvoicePrice($id){
         // if(Auth::guard('customer')->check()){
@@ -60,6 +94,21 @@ class Helper {
     }
 
 
+    public static function getVendorId($user_id=""){
+        if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
+        $cart= Cart::where('customer_id',$user_id)->where('order_id',null)->first();
+        // dd()
+        return $cart->vendor_id;
+
+    }
+
+    public static function getVendorAPiKey($vendor_id){
+        $vendor = Vendor::whereId($vendor_id)->with('api_key')->first();
+        // dd($vendor);
+        return $vendor->api_key->stripe;
+
+    }
+    // Vendor::whereId($request->vendor_id)->with('api_key')->first();
     // Total price with shipping and coupon
     // public static function grandPrice($id,$user_id){
     //     $order=Order::find($id);
