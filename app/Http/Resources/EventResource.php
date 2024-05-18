@@ -24,8 +24,7 @@ class EventResource extends JsonResource
             'start_time' =>$this->start_time,
             'end_time' =>$this->end_time,
             'location' =>$this->location,
-
-
+            'link' => route('event.show',$this->id)
         ];
     }
 }
