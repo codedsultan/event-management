@@ -17,7 +17,17 @@ class EventResource extends JsonResource
         return [
             'id' =>$this->id,
             'name' => $this->title,
-            'details' => $this->description
+            'details' => $this->description,
+            'bg_image_path' =>$this->bg_image_path ?? 'https://staging.theyardtsc.com/retina.webp' ,
+            'start_date' =>$this->start_date,
+            'end_date' =>$this->end_date,
+            'start_time' =>$this->start_time,
+            'end_time' =>$this->end_time,
+            'location' =>$this->location,
+
+
         ];
     }
 }
+
+
