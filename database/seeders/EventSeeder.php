@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\ApiKey;
 use App\Models\Event;
-use App\Models\vendor;
+use App\Models\Vendor;
 use App\Models\Ticket;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
