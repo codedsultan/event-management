@@ -69,7 +69,6 @@ class AuthController extends Controller
   }
 
     public function check(Request $request){
-        //Validate Inputs
         $request->validate([
            'email'=>'required|email|exists:customers,email',
            'password'=>'required|min:5|max:30'
@@ -129,13 +128,9 @@ class AuthController extends Controller
     }
     public function verifyLogin(Request $request, $token)
     {
-        // dd('here');
         $token = \App\Models\LoginToken::whereToken(hash('sha256', $token))->with('user')->firstOrFail();
-        // dd([$token->isValid(),$request->hasValidSignature()]);
         abort_unless($request->hasValidSignature() && $token->isValid(), 401);
-        // dd($token->user);
         $token->consume();
-        // dd('here');
         Auth::guard('customer')->login($token->user);
         return redirect()->intended(route('user.home'));
     }

@@ -11,9 +11,7 @@ class CustomerTicketController extends Controller
 {
     public function index(Request $request)
     {
-        // $user = Customer::where('id',$request->user()->id)->with('tickets.event')->first();
         $tickets = CustomerTicket::where('customer_id',$request->user()->id)->with('ticket.event')->orderBy('id','desc')->paginate(20);
-        // $tickets = $user->tickets;
         return view('dashboard.user.ticket.index',compact('tickets'));
     }
 

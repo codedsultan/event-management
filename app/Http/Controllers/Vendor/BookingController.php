@@ -75,7 +75,6 @@ class BookingController extends Controller
     public function show(Booking $booking)
     {
         $booking->load('location');
-        // dd($booking);
         return view('dashboard.vendor.booking.show', compact('booking'));
     }
 

@@ -28,11 +28,8 @@ class StripePaymentController extends Controller
      */
     public function stripeCheckout(Request $request)
     {
-        // $vendor = Vendor::whereId($request->vendor_id)->with('api_key')->first();
-        // dd($vendor->api_key->stripe);
-        // dd(Helper::getVendorAPiKey($request->vendor_id));
+
         $stripe = new \Stripe\StripeClient(Helper::getVendorAPiKey($request->vendor_id));
-        // new \Stripe\StripeClient(env('STRIPE_SECRET'));
 
         $redirectUrl = route('vendor.stripe.success',['vendor' => $request->vendor_id]).'?session_id={CHECKOUT_SESSION_ID}';
         $response =  $stripe->checkout->sessions->create([

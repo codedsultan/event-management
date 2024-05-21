@@ -7,10 +7,10 @@ use App\Models\Cart;
 use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
-use PDF;
+// use PDF;
 use Helper;
 use Illuminate\Support\Str;
-use App\Notifications\StatusNotification;
+// use App\Notifications\StatusNotification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
@@ -46,7 +46,6 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // dd($request->vendor);
         $vendor = intval($request->vendor);
 
         if(Auth::guard('customer')->check())
@@ -56,7 +55,7 @@ class OrderController extends Controller
                 return back();
             }
             $user = auth()->guard('customer')->user();
-            // dd($user);
+
         }else{
             $data = $request->validate([
                 'email' => ['required','string','email']
@@ -70,59 +69,34 @@ class OrderController extends Controller
         }
 
 
-        // $vendor = intval($request->vendor);
-        // if(empty(Cart::where('customer_id',$request->user()->id)->where('order_id',null)->where('vendor_id',$vendor)->first())){
-        //     request()->session()->flash('error','Cart is Empty !');
-        //     return back();
-        // }
-
 
         $vendor = intval($request->vendor);
         $order=new Order();
         $order_data=$request->all();
-        // dd($data['email']);
         $order_data['order_number']='ORD-'.strtoupper(Str::random(10));
         $order_data['customer_id']=$user->id;
         $order_data['sub_total']=Helper::totalVendorCartPrice('',$vendor);
         $order_data['total_amount']=Helper::totalVendorCartPrice('',$vendor);
         $order_data['quantity']=Helper::cartCount();
         $order_data['vendor_id']= $vendor;
-        // Helper::getVendorId();
 
         $order_data['status']="new";
-        // if(request('payment_method')=='paypal'){
-        //     $order_data['payment_method']='paypal';
-        //     $order_data['payment_status']='paid';
-        // }
-        // else{
-        //     $order_data['payment_method']='cod';
-        //     $order_data['payment_status']='Unpaid';
-        // }
         $order->fill($order_data);
         $status=$order->save();
         if($order)
-        // dd($order->id);
-        $users=User::first();
-        $details=[
-            'title'=>'New order created',
-            'actionURL'=>'#',
-            // route('order.show',$order->id),
-            'fas'=>'fa-file-alt'
-        ];
+        // $users=User::first();
+        // $details=[
+        //     'title'=>'New order created',
+        //     'actionURL'=>'#',
+        //     // route('order.show',$order->id),
+        //     'fas'=>'fa-file-alt'
+        // ];
         // Notification::send($users, new StatusNotification($details));
-        // if(request('payment_method')=='paypal'){
-        //     return redirect()->route('payment')->with(['id'=>$order->id]);
-        // }
-        // else{
-        //     session()->forget('cart');
-        //     // session()->forget('coupon');
-        // }
+
         Cart::where('customer_id', $user->id)->where('order_id', null)->where('vendor_id',$vendor)->update(['order_id' => $order->id]);
 
-        // dd($users);
         request()->session()->flash('success','Your ticket successfully placed in order');
 
-        // {{ route('stripe.checkout', ['price' => 10, 'product' => 'Silver']) }}
         return redirect()->route('stripe.checkout', ['customer_email' => $user->email,'price' => $order->total_amount, 'order' => $order->order_number, 'order_id' => $order->id, 'vendor_id' => $order->vendor_id]);
     }
 
@@ -135,7 +109,6 @@ class OrderController extends Controller
     public function show($id)
     {
         $order=Order::find($id);
-        // return $order;
         return view('admin.order.show')->with('order',$order);
     }
 

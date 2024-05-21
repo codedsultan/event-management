@@ -11,8 +11,6 @@ class InvoicePaymentController extends Controller
 {
     public function pay(Invoice $invoice)
     {
-        // dd( $invoice);
-
         return redirect()->route('vendor.stripe.checkout', ['price' => $invoice->total_amount, 'invoice' => $invoice->number ,'invoice_id' => $invoice->id]);
         $invoice->status = 'paid';
         $invoice->save();
@@ -63,9 +61,7 @@ class InvoicePaymentController extends Controller
                 ],
                 'mode' => 'payment',
                 'allow_promotion_codes' => true,
-                // 'custom_fields' => [
-                //     'invoice_no' => $request->invoice
-                // ],
+
                 'metadata' => [
                     'invoice_no' => $request->invoice,
                     'invoice_id' => $request->invoice_id
@@ -107,10 +103,6 @@ class InvoicePaymentController extends Controller
 
             return redirect()->route('vendor.bookings')->with('success','Payment successful,Event has been Created successfully');
         }
-        // dd($session);
-        // dd($session->status === 'complete');
-        // dd($session->metadata->invoice_id);
-        // info($session);
 
         return redirect()->route('home')
                          ->with('success', 'Payment Unsuccessful.');

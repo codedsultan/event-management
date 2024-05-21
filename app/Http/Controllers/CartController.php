@@ -32,89 +32,21 @@ class CartController extends Controller
         }
 
 
-        // foreach(Helper::getAllVendorProductFromCart() as $x => $y){
-        //     echo($x);
-        // }
-
         return view('dashboard.user.carts');
     }
-    public function addToCart(Request $request){
 
-
-        // dd($request->all());
-        if (empty($request->id)) {
-            request()->session()->flash('error','Invalid Products');
-            return back();
-        }
-        $ticket = Ticket::where('id', $request->id)->first();
-        // return $product;
-        if (empty($ticket)) {
-            request()->session()->flash('error','Invalid Products');
-            return back();
-        }
-
-        $already_cart = Cart::where('customer_id', auth()->user()->id)->where('order_id',null)->where('product_id', $ticket->id)->first();
-        // return $already_cart;
-        if($already_cart) {
-            // dd($already_cart);
-            $already_cart->quantity = $already_cart->quantity + 1;
-            $already_cart->amount = $ticket->price+ $already_cart->amount;
-            // return $already_cart->quantity;
-            if ($already_cart->product->stock < $already_cart->quantity || $already_cart->product->stock <= 0) return back()->with('error','Stock not sufficient!.');
-            $already_cart->save();
-
-        }else{
-
-            $cart = new Cart;
-            $cart->customer_id = auth()->user()->id;
-            $cart->ticket_id = $ticket->id;
-            $cart->price = $ticket->price;
-            // $cart->price = ($ticket->price-($ticket->price*$ticket->discount)/100);
-            $cart->quantity = 1;
-            $cart->amount=$cart->price*$cart->quantity;
-            // if ($cart->ticket->stock < $cart->quantity || $cart->product->stock <= 0) return back()->with('error','Stock not sufficient!.');
-            $cart->save();
-        }
-        request()->session()->flash('success','Ticket successfully added to cart');
-        return back();
-    }
 
     public function singleAddToCart(Request $request){
 
-        // dd(Auth::guard('customer')->user());
-
-        // dd(session()->getId());
-        // $oldCart = Session::has('cart') ? Session::get('cart') : null;
-        // Session::forget('cart');
-        // dd($request->session()->put('cart', session()->getId()));
-        // Session::has('cart') ? Session::get('cart') : $request->session()->put('cart', session()->getId());
-        // $scart_id = Session::get('cart');
-        // dd($scart_id);
-
-
-
-        // dd($oldCart);
         $request->validate([
             'id'      =>  'required',
             'qty'      =>  'required',
         ]);
-        // dd($request->qty);
-
 
         $ticket = Ticket::where('id', $request->id)->with('event')->first();
-        // if($ticket->stock <$request->qty){
-        //     return back()->with('error','Out of stock, You can add other ticket.');
-        // }
-        // if ( ($request->qty < 1) || empty($product) ) {
-        //     request()->session()->flash('error','Invalid ticket');
-        //     return back();
-        // }
-            // dd($ticket);
-        // dd(Auth::guard('customer')->check());
-        // dd(request()->user());
+
         if(Auth::guard('customer')->check())
         {
-            // dd(auth()->guard('customer')->user()->id);
             $already_cart = Cart::where('customer_id', auth()->guard('customer')->user()->id)->where('order_id',null)->where('ticket_id', $ticket->id)->first();
         } else {
             Session::has('cart') ? Session::get('cart') : $request->session()->put('cart', session()->getId());
@@ -122,16 +54,11 @@ class CartController extends Controller
             $already_cart = Cart::where('session_id', $scart_id)->where('order_id',null)->where('ticket_id', $ticket->id)->first();
         }
 
-
-        // return $already_cart;
-
         if($already_cart) {
             $already_cart->quantity = $already_cart->quantity + $request->qty;
             // $already_cart->price = ($product->price * $request->qty) + $already_cart->price ;
             $already_cart->amount = ($ticket->price * $request->qty)+ $already_cart->amount;
-
             // if ($already_cart->product->stock < $already_cart->quantity || $already_cart->product->stock <= 0) return back()->with('error','Stock not sufficient!.');
-
             $already_cart->save();
 
         }else{
@@ -169,28 +96,15 @@ class CartController extends Controller
     }
 
     public function cartUpdate(Request $request){
-        // dd($request->all());
         if($request->qty){
             $error = array();
             $success = '';
-            // return $request->quant;
             foreach ($request->qty as $k=>$quant) {
-                // return $k;
                 $id = $request->qty_id[$k];
-                // return $id;
                 $cart = Cart::find($id);
-                // return $cart;
                 if($quant > 0 && $cart) {
-                    // return $quant;
 
-                    // if($cart->ticket->stock < $quant){
-                    //     request()->session()->flash('error','Out of stock');
-                    //     return back();
-                    // }
-                    // $cart->quantity = ($cart->ticket->stock > $quant) ? $quant  : $cart->product->stock;
-                    // return $cart;
                     $cart->quantity = $quant;
-                    // if ($cart->product->stock <=0) continue;
                     $after_price=$cart->ticket->price;
                     // $after_price=($cart->product->price-($cart->product->price*$cart->product->discount)/100);
                     $cart->amount = $after_price * $quant;
@@ -207,107 +121,7 @@ class CartController extends Controller
         }
     }
 
-    // public function addToCart(Request $request){
-    //     // return $request->all();
-    //     if(Auth::check()){
-    //         $qty=$request->quantity;
-    //         $this->product=$this->product->find($request->pro_id);
-    //         if($this->product->stock < $qty){
-    //             return response(['status'=>false,'msg'=>'Out of stock','data'=>null]);
-    //         }
-    //         if(!$this->product){
-    //             return response(['status'=>false,'msg'=>'Product not found','data'=>null]);
-    //         }
-    //         // $session_id=session('cart')['session_id'];
-    //         // if(empty($session_id)){
-    //         //     $session_id=Str::random(30);
-    //         //     // dd($session_id);
-    //         //     session()->put('session_id',$session_id);
-    //         // }
-    //         $current_item=array(
-    //             'user_id'=>auth()->user()->id,
-    //             'id'=>$this->product->id,
-    //             // 'session_id'=>$session_id,
-    //             'title'=>$this->product->title,
-    //             'summary'=>$this->product->summary,
-    //             'link'=>route('product-detail',$this->product->slug),
-    //             'price'=>$this->product->price,
-    //             'photo'=>$this->product->photo,
-    //         );
-
-    //         $price=$this->product->price;
-    //         if($this->product->discount){
-    //             $price=($price-($price*$this->product->discount)/100);
-    //         }
-    //         $current_item['price']=$price;
-
-    //         $cart=session('cart') ? session('cart') : null;
-
-    //         if($cart){
-    //             // if anyone alreay order products
-    //             $index=null;
-    //             foreach($cart as $key=>$value){
-    //                 if($value['id']==$this->product->id){
-    //                     $index=$key;
-    //                 break;
-    //                 }
-    //             }
-    //             if($index!==null){
-    //                 $cart[$index]['quantity']=$qty;
-    //                 $cart[$index]['amount']=ceil($qty*$price);
-    //                 if($cart[$index]['quantity']<=0){
-    //                     unset($cart[$index]);
-    //                 }
-    //             }
-    //             else{
-    //                 $current_item['quantity']=$qty;
-    //                 $current_item['amount']=ceil($qty*$price);
-    //                 $cart[]=$current_item;
-    //             }
-    //         }
-    //         else{
-    //             $current_item['quantity']=$qty;
-    //             $current_item['amount']=ceil($qty*$price);
-    //             $cart[]=$current_item;
-    //         }
-
-    //         session()->put('cart',$cart);
-    //         return response(['status'=>true,'msg'=>'Cart successfully updated','data'=>$cart]);
-    //     }
-    //     else{
-    //         return response(['status'=>false,'msg'=>'You need to login first','data'=>null]);
-    //     }
-    // }
-
-    // public function removeCart(Request $request){
-    //     $index=$request->index;
-    //     // return $index;
-    //     $cart=session('cart');
-    //     unset($cart[$index]);
-    //     session()->put('cart',$cart);
-    //     return redirect()->back()->with('success','Successfully remove item');
-    // }
-
     public function checkout(Request $request){
-        // $cart=session('cart');
-        // $cart_index=\Str::random(10);
-        // $sub_total=0;
-        // foreach($cart as $cart_item){
-        //     $sub_total+=$cart_item['amount'];
-        //     $data=array(
-        //         'cart_id'=>$cart_index,
-        //         'user_id'=>$request->user()->id,
-        //         'product_id'=>$cart_item['id'],
-        //         'quantity'=>$cart_item['quantity'],
-        //         'amount'=>$cart_item['amount'],
-        //         'status'=>'new',
-        //         'price'=>$cart_item['price'],
-        //     );
-
-        //     $cart=new Cart();
-        //     $cart->fill($data);
-        //     $cart->save();
-        // }
         return view('frontend.pages.checkout');
     }
 }
