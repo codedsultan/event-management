@@ -12,6 +12,7 @@
                                 <!-- <p>Please register in order to checkout more quickly</p> -->
                                 <!-- Form -->
                                 <div class="row">
+                                @if(!Auth::guard('customer')->check())
                                 <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-group">
                                             <label>Email Address<span>*</span></label>
@@ -21,6 +22,7 @@
                                             @enderror
                                         </div>
                                     </div>
+                                    @endif
                                 </div>
                                 <!-- <div class="row">
                                     <div class="col-lg-6 col-md-6 col-12">

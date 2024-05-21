@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
 use PDF;
 use Helper;
 use Illuminate\Support\Str;
 use App\Notifications\StatusNotification;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
 {
@@ -44,21 +47,42 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         // dd($request->vendor);
-        $data = $request->validate([
-                    'email' => ['required','string','email']
-                ]);
         $vendor = intval($request->vendor);
-        if(empty(Cart::where('customer_id',$request->user()->id)->where('order_id',null)->where('vendor_id',$vendor)->first())){
-            request()->session()->flash('error','Cart is Empty !');
-            return back();
+
+        if(Auth::guard('customer')->check())
+        {
+            if(empty(Cart::where('customer_id',auth()->guard('customer')->user()->id)->where('order_id',null)->where('vendor_id',$vendor)->first())){
+                request()->session()->flash('error','Cart is Empty !');
+                return back();
+            }
+            $user = auth()->guard('customer')->user();
+            // dd($user);
+        }else{
+            $data = $request->validate([
+                'email' => ['required','string','email']
+            ]);
+            if(empty(Cart::where('session_id',Session::get('cart'))->where('order_id',null)->where('vendor_id',$vendor)->first())){
+                request()->session()->flash('error','Cart is Empty !');
+                return back();
+            }
+            $user = Customer::firstOrCreate(['email' =>  $data['email']]);
+            Cart::where('session_id', Session::get('cart'))->where('order_id', null)->where('vendor_id',$vendor)->update(['customer_id' => $user->id]);
         }
+
+
+        // $vendor = intval($request->vendor);
+        // if(empty(Cart::where('customer_id',$request->user()->id)->where('order_id',null)->where('vendor_id',$vendor)->first())){
+        //     request()->session()->flash('error','Cart is Empty !');
+        //     return back();
+        // }
+
 
         $vendor = intval($request->vendor);
         $order=new Order();
         $order_data=$request->all();
         // dd($data['email']);
         $order_data['order_number']='ORD-'.strtoupper(Str::random(10));
-        $order_data['customer_id']=$request->user()->id;
+        $order_data['customer_id']=$user->id;
         $order_data['sub_total']=Helper::totalVendorCartPrice('',$vendor);
         $order_data['total_amount']=Helper::totalVendorCartPrice('',$vendor);
         $order_data['quantity']=Helper::cartCount();
@@ -93,13 +117,13 @@ class OrderController extends Controller
         //     session()->forget('cart');
         //     // session()->forget('coupon');
         // }
-        Cart::where('customer_id', $request->user()->id)->where('order_id', null)->where('vendor_id',$vendor)->update(['order_id' => $order->id]);
+        Cart::where('customer_id', $user->id)->where('order_id', null)->where('vendor_id',$vendor)->update(['order_id' => $order->id]);
 
         // dd($users);
         request()->session()->flash('success','Your ticket successfully placed in order');
 
         // {{ route('stripe.checkout', ['price' => 10, 'product' => 'Silver']) }}
-        return redirect()->route('stripe.checkout', ['customer_email' => $data['email'],'price' => $order->total_amount, 'order' => $order->order_number, 'order_id' => $order->id, 'vendor_id' => $order->vendor_id]);
+        return redirect()->route('stripe.checkout', ['customer_email' => $user->email,'price' => $order->total_amount, 'order' => $order->order_number, 'order_id' => $order->id, 'vendor_id' => $order->vendor_id]);
     }
 
     /**

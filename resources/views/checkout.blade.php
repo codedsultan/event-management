@@ -12,7 +12,8 @@
                                 <!-- <p>Please register in order to checkout more quickly</p> -->
                                 <!-- Form -->
                                 <div class="row">
-                                <div class="col-lg-6 col-md-6 col-12">
+
+                                    <div class="col-lg-6 col-md-6 col-12">
                                         <div class="form-group">
                                             <label>Email Address<span>*</span></label>
                                             <input type="email" name="email" placeholder="" value="{{old('email')}}">
@@ -21,6 +22,7 @@
                                             @enderror
                                         </div>
                                     </div>
+
                                 </div>
                                 <!-- <div class="row">
                                     <div class="col-lg-6 col-md-6 col-12">

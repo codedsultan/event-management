@@ -118,4 +118,25 @@ class AuthController extends Controller
 
         return back()->with('message', 'Verification link sent!');
     }
+    public function magicLogin(Request $request)
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email', 'exists:users,email'],
+        ]);
+        Customer::whereEmail($data['email'])->first()->sendLoginLink();
+        session()->flash('success', true);
+        return redirect()->back();
+    }
+    public function verifyLogin(Request $request, $token)
+    {
+        // dd('here');
+        $token = \App\Models\LoginToken::whereToken(hash('sha256', $token))->with('user')->firstOrFail();
+        // dd([$token->isValid(),$request->hasValidSignature()]);
+        abort_unless($request->hasValidSignature() && $token->isValid(), 401);
+        // dd($token->user);
+        $token->consume();
+        // dd('here');
+        Auth::guard('customer')->login($token->user);
+        return redirect()->intended(route('user.home'));
+    }
 }

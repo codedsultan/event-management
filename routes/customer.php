@@ -24,6 +24,10 @@ Route::prefix('user')->name('user.')->group(function(){
         Route::post('/password/forgot',[ForgotPasswordController::class,'sendResetLink'])->name('forgot.password.link');
         Route::get('/password/reset/{token}',[ForgotPasswordController::class,'showResetForm'])->name('reset.password.form');
         Route::post('/password/reset',[ForgotPasswordController::class,'resetPassword'])->name('reset.password');
+
+        Route::get('verify-login/{token}', [AuthController::class, 'verifyLogin'])->name('verify-login');
+        Route::view('magic-login', 'dashboard.user.magiclogin')->name('magic.login');
+        Route::post('login', [AuthController::class, 'magicLogin'])->name('magic.login');
   });
 
   Route::middleware(['auth:customer','verified_user'])->group(function(){

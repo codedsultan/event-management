@@ -9,6 +9,7 @@ class Cart extends Model
 {
     use HasFactory;
 
+    protected $fillable = ['customer_id','session_id'];
     public function ticket()
     {
         return $this->belongsTo(Ticket::class, 'ticket_id');

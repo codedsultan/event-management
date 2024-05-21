@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Ticket;
 use Helper;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
@@ -18,20 +17,10 @@ class CartController extends Controller
 
     public function index(Request $request)
     {
-        if(Auth::guard('customer')->check())
-        {
-            if(empty(Cart::where('customer_id',auth()->guard('customer')->user()->id)->where('order_id',null)->first())){
-                request()->session()->flash('success','Cart is Empty !');
-                // return redirect()->back();
-            }
-        }else {
-            if(empty(Cart::where('session_id',Session::get('cart'))->where('order_id',null)->first())){
-                request()->session()->flash('success','Cart is Empty !');
-                // return redirect()->back();
-            }
+        if(empty(Cart::where('customer_id',$request->user()->id)->where('order_id',null)->first())){
+            request()->session()->flash('success','Cart is Empty !');
+            return back();
         }
-
-
         // foreach(Helper::getAllVendorProductFromCart() as $x => $y){
         //     echo($x);
         // }
@@ -81,16 +70,10 @@ class CartController extends Controller
 
     public function singleAddToCart(Request $request){
 
-        // dd(Auth::guard('customer')->user());
+        $cart = $request->session()->put('cart', session()->getId());
 
         // dd(session()->getId());
-        // $oldCart = Session::has('cart') ? Session::get('cart') : null;
-        // Session::forget('cart');
-        // dd($request->session()->put('cart', session()->getId()));
-        // Session::has('cart') ? Session::get('cart') : $request->session()->put('cart', session()->getId());
-        // $scart_id = Session::get('cart');
-        // dd($scart_id);
-
+        $oldCart = Session::has('cart') ? Session::get('cart') : null;
 
 
         // dd($oldCart);
@@ -109,19 +92,9 @@ class CartController extends Controller
         //     request()->session()->flash('error','Invalid ticket');
         //     return back();
         // }
-            // dd($ticket);
-        // dd(Auth::guard('customer')->check());
-        // dd(request()->user());
-        if(Auth::guard('customer')->check())
-        {
-            // dd(auth()->guard('customer')->user()->id);
-            $already_cart = Cart::where('customer_id', auth()->guard('customer')->user()->id)->where('order_id',null)->where('ticket_id', $ticket->id)->first();
-        } else {
-            Session::has('cart') ? Session::get('cart') : $request->session()->put('cart', session()->getId());
-            $scart_id = Session::get('cart');
-            $already_cart = Cart::where('session_id', $scart_id)->where('order_id',null)->where('ticket_id', $ticket->id)->first();
-        }
 
+        // if()
+        $already_cart = Cart::where('customer_id', auth()->user()->id)->where('order_id',null)->where('ticket_id', $ticket->id)->first();
 
         // return $already_cart;
 
@@ -137,12 +110,7 @@ class CartController extends Controller
         }else{
 
             $cart = new Cart;
-            if(Auth::guard('customer')->check()) {
-                $cart->customer_id =  auth()->guard('customer')->user()->id;
-            } else {
-                $cart->session_id   = $scart_id;
-            }
-
+            $cart->customer_id = auth()->user()->id;
             $cart->ticket_id = $ticket->id;
             // $cart->price = ($ticket->price-($ticket->price*$ticket->discount)/100);
             $cart->price = $ticket->price;
@@ -162,10 +130,10 @@ class CartController extends Controller
         if ($cart) {
             $cart->delete();
             request()->session()->flash('success','Cart successfully removed');
-            return redirect()->back();
+            return back();
         }
         request()->session()->flash('error','Error please try again');
-        return redirect()->back();
+        return back();
     }
 
     public function cartUpdate(Request $request){
@@ -201,9 +169,9 @@ class CartController extends Controller
                     $error[] = 'Cart Invalid!';
                 }
             }
-            return redirect()->back()->with($error)->with('success', $success);
+            return back()->with($error)->with('success', $success);
         }else{
-            return redirect()->back()->with('Cart Invalid!');
+            return back()->with('Cart Invalid!');
         }
     }
 

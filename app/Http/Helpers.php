@@ -5,6 +5,7 @@ use App\Models\Cart;
 use App\Models\InvoiceItem;
 use App\Models\Vendor;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 // use Auth;
 class Helper {
@@ -19,6 +20,9 @@ class Helper {
         if(Auth::guard('customer')->check()){
             if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
             return Cart::where('customer_id',$user_id)->where('order_id',null)->sum('quantity');
+        }elseif(Session::has('cart')){
+            $scart_id = Session::get('cart') ;
+            return Cart::where('session_id',$scart_id)->where('order_id',null)->sum('quantity');
         }
         else{
             return 0;
@@ -34,6 +38,10 @@ class Helper {
             if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
             return Cart::with('ticket')->where('customer_id',$user_id)->where('order_id',null)->get();
         }
+        elseif(Session::has('cart')){
+            $scart_id = Session::get('cart') ;
+            return Cart::with('ticket')->where('session_id',$scart_id)->where('order_id',null)->get();
+        }
         else{
             return [];
         }
@@ -41,12 +49,12 @@ class Helper {
 
     public static function getAllVendorProductFromCart($user_id=''){
         if(Auth::guard('customer')->check()){
-            if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
+            if($user_id=="") $user_id= auth()->guard('customer')->user()->id;
             return Cart::with('ticket')->where('customer_id',$user_id)->where('order_id',null)->get()->groupBy('vendor_id');
-            // ->groupBy(function($data) {
-            //     return $data->timezone;
-            // });
 
+        }elseif(Session::has('cart')){
+            $scart_id = Session::get('cart') ;
+            return Cart::with('ticket')->where('session_id',$scart_id)->where('order_id',null)->get()->groupBy('vendor_id');
         }
         else{
             return [];
@@ -55,8 +63,12 @@ class Helper {
     // Total amount cart
     public static function totalCartPrice($user_id=''){
         if(Auth::guard('customer')->check()){
-            if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
+            if($user_id=="") $user_id = auth()->guard('customer')->user()->id;
             return Cart::where('customer_id',$user_id)->where('order_id',null)->sum('amount');
+        }
+        elseif(Session::has('cart')){
+            $scart_id = Session::get('cart') ;
+            return Cart::where('session_id',$scart_id)->where('order_id',null)->sum('amount');
         }
         else{
             return 0;
@@ -73,10 +85,14 @@ class Helper {
     //     }
     // }
 
-    public static function totalVendorCartPrice($user_id='',$vendor_id=""){
+    public static function totalVendorCartPrice($user_id='',$vendor_id="" ){
         if(Auth::guard('customer')->check()){
             if($user_id=="") $user_id=auth()->guard('customer')->user()->id;
             return Cart::where('customer_id',$user_id)->where('order_id',null)->where('vendor_id',$vendor_id)->sum('amount');
+        }
+        elseif(Session::has('cart')){
+            $scart_id = Session::get('cart') ;
+            return Cart::where('session_id',$scart_id)->where('order_id',null)->where('vendor_id',$vendor_id)->sum('amount');
         }
         else{
             return 0;

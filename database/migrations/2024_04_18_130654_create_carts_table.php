@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('ticket_id');
             $table->integer('order_id')->nullable();
             $table->integer('customer_id')->nullable();
+            $table->string('session_id')->nullable();
             $table->integer('vendor_id')->nullable();
             $table->float('price');
             $table->enum('status',['new','progress','cancel'])->default('new');

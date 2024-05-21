@@ -12,13 +12,17 @@ Route::get('/events/{id}', [EventController::class, 'show'])->name('event.show')
 Route::get('/iframe/events', [EventController::class, 'iframe'])->name('iframe');
 
 //Cart section
-    Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add-to-cart')->middleware('auth:customer');
-    Route::post('/add-to-cart', [CartController::class, 'singleAddToCart'])->name('single-add-to-cart')->middleware('auth:customer');
-    Route::get('cart-delete/{id}', [CartController::class, 'cartDelete'])->name('cart.delete')->middleware('auth:customer');
-    Route::post('cart-update', [CartController::class, 'cartUpdate'])->name('cart.update')->middleware('auth:customer');
-
-    Route::get('/cart',[CartController::class, 'index'])->name('cart')->middleware('auth:customer');
-    Route::post('cart/order', [OrderController::class, 'store'])->name('cart.order')->middleware('auth:customer');
+    // Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add-to-cart')->middleware('auth:customer');
+    // Route::post('/add-to-cart', [CartController::class, 'singleAddToCart'])->name('single-add-to-cart')->middleware('auth:customer');
+    // Route::get('cart-delete/{id}', [CartController::class, 'cartDelete'])->name('cart.delete')->middleware('auth:customer');
+    // Route::post('cart-update', [CartController::class, 'cartUpdate'])->name('cart.update')->middleware('auth:customer');
+    Route::get('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('add-to-cart')->middleware('guest');
+    Route::post('/add-to-cart', [CartController::class, 'singleAddToCart'])->name('single-add-to-cart')->middleware('guest');
+    // Route::delete('cart-delete/{id}', [CartController::class, 'cartDelete'])->name('cart.delete')->middleware('guest');
+    Route::get('cart-delete/{id}', [CartController::class, 'cartDelete'])->name('cart.delete')->middleware('guest');
+    Route::post('cart-update', [CartController::class, 'cartUpdate'])->name('cart.update')->middleware('guest');
+    Route::get('/cart',[CartController::class, 'index'])->name('cart')->middleware('guest');
+    Route::post('cart/order', [OrderController::class, 'store'])->name('cart.order')->middleware('guest');
 Route::get('/login', function () {
     return view('welcome');
 })->name('login');
