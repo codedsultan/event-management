@@ -69,7 +69,6 @@ class AuthController extends Controller
   }
 
     public function check(Request $request){
-        //Validate Inputs
         $request->validate([
            'email'=>'required|email|exists:customers,email',
            'password'=>'required|min:5|max:30'
@@ -80,7 +79,7 @@ class AuthController extends Controller
         $creds = $request->only('email','password');
 
         if( Auth::guard('customer')->attempt($creds) ){
-            return redirect()->route('user.home');
+            return redirect()->intended(route('user.home'));
         }else{
             return redirect()->route('user.login')->with('fail','Incorrect Credentials');
         }
@@ -117,5 +116,22 @@ class AuthController extends Controller
         $request->user()->sendEmailVerificationNotification();
 
         return back()->with('message', 'Verification link sent!');
+    }
+    public function magicLogin(Request $request)
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email', 'exists:users,email'],
+        ]);
+        Customer::whereEmail($data['email'])->first()->sendLoginLink();
+        session()->flash('success', true);
+        return redirect()->back();
+    }
+    public function verifyLogin(Request $request, $token)
+    {
+        $token = \App\Models\LoginToken::whereToken(hash('sha256', $token))->with('user')->firstOrFail();
+        abort_unless($request->hasValidSignature() && $token->isValid(), 401);
+        $token->consume();
+        Auth::guard('customer')->login($token->user);
+        return redirect()->intended(route('user.home'));
     }
 }

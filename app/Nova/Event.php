@@ -31,7 +31,7 @@ class Event extends Resource
      * @var array
      */
     public static $search = [
-        'id','title'
+        'title'
     ];
 
     /**
@@ -66,13 +66,13 @@ class Event extends Resource
                 ->rules('required', 'string')
                 ->hideFromIndex(),
 
-            Text::make('Location')
-                ->sortable()
-                ->rules('required', 'string'),
+            // Text::make('Location')
+            //     ->sortable()
+            //     ->rules('required', 'string'),
 
-            Text::make('Location Address')
-                ->sortable()
-                ->rules('required', 'string'),
+            // Text::make('Location Address')
+            //     ->sortable()
+            //     ->rules('required', 'string'),
 
             Date::make('Start Date')
                 ->sortable()
@@ -95,9 +95,7 @@ class Event extends Resource
                 return $timestamp->format('H:i');
             })->rules('date_format:"H:i"')->withMeta(['extraAttributes' => ['type' => 'time']]),
 
-            Text::make('Venue Name')
-                ->sortable()
-                ->rules( 'string'),
+
 
 
         ];

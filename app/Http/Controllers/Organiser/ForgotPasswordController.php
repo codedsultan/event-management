@@ -16,8 +16,10 @@ use Illuminate\Support\Str;
 class ForgotPasswordController extends Controller
 {
     public function showForgotForm(){
+        // number_format();
         return view('dashboard.organiser.forgot');
     }
+
     public function sendResetLink(Request $request){
         $request->validate([
             'email'=>'required|email|exists:organisers,email'

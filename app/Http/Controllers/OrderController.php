@@ -4,13 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\Customer;
 use App\Models\Order;
 use App\Models\User;
-use PDF;
+// use PDF;
 use Helper;
 use Illuminate\Support\Str;
-use App\Notifications\StatusNotification;
-use Illuminate\Support\Facades\Notification as FacadesNotification;
+// use App\Notifications\StatusNotification;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Session;
 
 class OrderController extends Controller
 {
@@ -22,7 +25,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders=Order::orderBy('id','DESC')->paginate(10);
-        return view('backend.order.index')->with('orders',$orders);
+        // return view('admin.order.index')->with('orders',$orders);
     }
 
     /**
@@ -43,102 +46,58 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        // $$request->validate($request,[
-        //     'first_name'=>'string|required',
-        //     'last_name'=>'string|required',
-        //     'address1'=>'string|required',
-        //     'address2'=>'string|nullable',
-        //     'coupon'=>'nullable|numeric',
-        //     'phone'=>'numeric|required',
-        //     'post_code'=>'string|nullable',
-        //     'email'=>'string|required'
-        // ]);
-        // return $request->all();
+        $vendor = intval($request->vendor);
 
-        if(empty(Cart::where('user_id',auth()->user()->id)->where('order_id',null)->first())){
-            request()->session()->flash('error','Cart is Empty !');
-            return back();
+        if(Auth::guard('customer')->check())
+        {
+            if(empty(Cart::where('customer_id',auth()->guard('customer')->user()->id)->where('order_id',null)->where('vendor_id',$vendor)->first())){
+                request()->session()->flash('error','Cart is Empty !');
+                return back();
+            }
+            $user = auth()->guard('customer')->user();
+
+        }else{
+            $data = $request->validate([
+                'email' => ['required','string','email']
+            ]);
+            if(empty(Cart::where('session_id',Session::get('cart'))->where('order_id',null)->where('vendor_id',$vendor)->first())){
+                request()->session()->flash('error','Cart is Empty !');
+                return back();
+            }
+            $user = Customer::firstOrCreate(['email' =>  $data['email']]);
+            Cart::where('session_id', Session::get('cart'))->where('order_id', null)->where('vendor_id',$vendor)->update(['customer_id' => $user->id]);
         }
-        // $cart=Cart::get();
-        // // return $cart;
-        // $cart_index='ORD-'.strtoupper(uniqid());
-        // $sub_total=0;
-        // foreach($cart as $cart_item){
-        //     $sub_total+=$cart_item['amount'];
-        //     $data=array(
-        //         'cart_id'=>$cart_index,
-        //         'user_id'=>$request->user()->id,
-        //         'product_id'=>$cart_item['id'],
-        //         'quantity'=>$cart_item['quantity'],
-        //         'amount'=>$cart_item['amount'],
-        //         'status'=>'new',
-        //         'price'=>$cart_item['price'],
-        //     );
 
-        //     $cart=new Cart();
-        //     $cart->fill($data);
-        //     $cart->save();
-        // }
 
-        // $total_prod=0;
-        // if(session('cart')){
-        //         foreach(session('cart') as $cart_items){
-        //             $total_prod+=$cart_items['quantity'];
-        //         }
-        // }
 
+        $vendor = intval($request->vendor);
         $order=new Order();
         $order_data=$request->all();
         $order_data['order_number']='ORD-'.strtoupper(Str::random(10));
-        $order_data['user_id']=$request->user()->id;
-        // return session('coupon')['value'];
-        $order_data['sub_total']=Helper::totalCartPrice();
+        $order_data['customer_id']=$user->id;
+        $order_data['sub_total']=Helper::totalVendorCartPrice('',$vendor);
+        $order_data['total_amount']=Helper::totalVendorCartPrice('',$vendor);
         $order_data['quantity']=Helper::cartCount();
-        // if(session('coupon')){
-        //     $order_data['coupon']=session('coupon')['value'];
-        // }
+        $order_data['vendor_id']= $vendor;
 
-
-        // if(session('coupon')){
-        //     $order_data['total_amount']=Helper::totalCartPrice()-session('coupon')['value'];
-        // }
-        // else{
-        //     $order_data['total_amount']=Helper::totalCartPrice();
-        // }
-
-        // return $order_data['total_amount'];
         $order_data['status']="new";
-        // if(request('payment_method')=='paypal'){
-        //     $order_data['payment_method']='paypal';
-        //     $order_data['payment_status']='paid';
-        // }
-        // else{
-        //     $order_data['payment_method']='cod';
-        //     $order_data['payment_status']='Unpaid';
-        // }
         $order->fill($order_data);
         $status=$order->save();
         if($order)
-        // dd($order->id);
-        $users=User::first();
-        $details=[
-            'title'=>'New order created',
-            'actionURL'=>route('order.show',$order->id),
-            'fas'=>'fa-file-alt'
-        ];
-        // FacadesNotification::send($users, new StatusNotification($details));
-        // if(request('payment_method')=='paypal'){
-        //     return redirect()->route('payment')->with(['id'=>$order->id]);
-        // }
-        // else{
-        //     session()->forget('cart');
-        //     // session()->forget('coupon');
-        // }
-        Cart::where('user_id', auth()->user()->id)->where('order_id', null)->update(['order_id' => $order->id]);
+        // $users=User::first();
+        // $details=[
+        //     'title'=>'New order created',
+        //     'actionURL'=>'#',
+        //     // route('order.show',$order->id),
+        //     'fas'=>'fa-file-alt'
+        // ];
+        // Notification::send($users, new StatusNotification($details));
 
-        // dd($users);
+        Cart::where('customer_id', $user->id)->where('order_id', null)->where('vendor_id',$vendor)->update(['order_id' => $order->id]);
+
         request()->session()->flash('success','Your ticket successfully placed in order');
-        return redirect()->route('event.index');
+
+        return redirect()->route('stripe.checkout', ['customer_email' => $user->email,'price' => $order->total_amount, 'order' => $order->order_number, 'order_id' => $order->id, 'vendor_id' => $order->vendor_id]);
     }
 
     /**
@@ -150,8 +109,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order=Order::find($id);
-        // return $order;
-        return view('backend.order.show')->with('order',$order);
+        return view('admin.order.show')->with('order',$order);
     }
 
     /**
@@ -163,7 +121,7 @@ class OrderController extends Controller
     public function edit($id)
     {
         $order=Order::find($id);
-        return view('backend.order.edit')->with('order',$order);
+        return view('admin.order.edit')->with('order',$order);
     }
 
     /**
@@ -177,18 +135,11 @@ class OrderController extends Controller
     {
         $order=Order::find($id);
         $this->validate($request,[
-            'status'=>'required|in:new,process,delivered,cancel'
+            'status'=>'required|in:new,cancel'
         ]);
         $data=$request->all();
         // return $request->status;
-        if($request->status=='delivered'){
-            foreach($order->cart as $cart){
-                $product=$cart->product;
-                // return $product;
-                $product->stock -=$cart->quantity;
-                $product->save();
-            }
-        }
+
         $status=$order->fill($data)->save();
         if($status){
             request()->session()->flash('success','Successfully updated order');
@@ -221,41 +172,6 @@ class OrderController extends Controller
         else{
             request()->session()->flash('error','Order can not found');
             return redirect()->back();
-        }
-    }
-
-    public function orderTrack(){
-        return view('frontend.pages.order-track');
-    }
-
-    public function productTrackOrder(Request $request){
-        // return $request->all();
-        $order=Order::where('user_id',auth()->user()->id)->where('order_number',$request->order_number)->first();
-        if($order){
-            if($order->status=="new"){
-            request()->session()->flash('success','Your order has been placed. please wait.');
-            return redirect()->route('home');
-
-            }
-            elseif($order->status=="process"){
-                request()->session()->flash('success','Your order is under processing please wait.');
-                return redirect()->route('home');
-
-            }
-            elseif($order->status=="delivered"){
-                request()->session()->flash('success','Your order is successfully delivered.');
-                return redirect()->route('home');
-
-            }
-            else{
-                request()->session()->flash('error','Your order canceled. please try again');
-                return redirect()->route('home');
-
-            }
-        }
-        else{
-            request()->session()->flash('error','Invalid order numer please try again');
-            return back();
         }
     }
 

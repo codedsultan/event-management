@@ -42,9 +42,9 @@
                 <p><b>End Date:</b> {{$event->end_time}}</p>
                 <p><b>Start Time:</b> {{$event->start_time}}</p>
                 <p><b>End Time:</b> {{$event->end_time}}</p>
-                <p><b>Location:</b> {{$event->location}}</p>
+                <!-- <p><b>Location:</b> {{$event->location}}</p>
                 <p><b>Venue:</b> {{$event->venue_name}}</p>
-                <p><b>Address:</b> {{$event->location_address}}</p>
+                <p><b>Address:</b> {{$event->location_address}}</p> -->
                 <!-- <p><b>Tickets:</b> Illustrator</p> -->
                 <!-- <p class="mb-0"><b>Budget:</b> $500</p> -->
             </div>
@@ -67,7 +67,7 @@
         <!-- / column -->
 
         <div class="col-md-6">
-            <img class="border p-12 mt-10" src="{{$event->featured_image}}"  width="100%" height="600" alt="project-image" class="rounded">
+            <img class="border p-4 mt-10" src="{{$event->featured_image}}"  width="100%" height="600" alt="project-image" class="rounded">
         </div>
         <!-- / column -->
     </div>

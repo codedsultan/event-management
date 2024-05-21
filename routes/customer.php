@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Customer\AuthController;
+use App\Http\Controllers\Customer\CustomerTicketController;
 use App\Http\Controllers\Customer\ForgotPasswordController;
+use App\Http\Controllers\Customer\OrderController;
+use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,15 +24,28 @@ Route::prefix('user')->name('user.')->group(function(){
         Route::post('/password/forgot',[ForgotPasswordController::class,'sendResetLink'])->name('forgot.password.link');
         Route::get('/password/reset/{token}',[ForgotPasswordController::class,'showResetForm'])->name('reset.password.form');
         Route::post('/password/reset',[ForgotPasswordController::class,'resetPassword'])->name('reset.password');
+
+        Route::get('verify-login/{token}', [AuthController::class, 'verifyLogin'])->name('verify-login');
+        Route::view('magic-login', 'dashboard.user.magiclogin')->name('magic.login');
+        Route::post('login', [AuthController::class, 'magicLogin'])->name('magic.login');
   });
 
   Route::middleware(['auth:customer','verified_user'])->group(function(){
         Route::view('/','dashboard.user.home')->name('home');
+
         // Route::get('/home',function(Request $request){
         //     dd($request->user()->name );
         //     return dd($request);
         // })->name('home');
         Route::post('/logout',[AuthController::class,'logout'])->name('logout');
+        Route::get('/tickets',[CustomerTicketController::class,'index'])->name('tickets');
+        Route::get('/ticket/{customerTicket}',[CustomerTicketController::class,'show'])->name('ticket.show');
+        Route::get('/ticket/{customerTicket}/edit',[CustomerTicketController::class,'edit'])->name('ticket.edit');
+        Route::post('/ticket/{customerTicket}/update',[CustomerTicketController::class,'update'])->name('ticket.update');
+
+
+        Route::get('/orders',[OrderController::class,'index'])->name('orders');
+        Route::get('/orders/{order}',[OrderController::class,'show'])->name('order.show');
   });
 
 

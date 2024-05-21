@@ -82,7 +82,7 @@ class AuthController extends Controller
         $creds = $request->only('email','password');
 
         if( Auth::guard('organiser')->attempt($creds) ){
-            return redirect()->route('organiser.home');
+            return redirect()->intended('organiser.home');
         }else{
             return redirect()->route('organiser.login')->with('fail','Incorrect Credentials');
         }
