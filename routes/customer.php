@@ -27,7 +27,7 @@ Route::prefix('user')->name('user.')->group(function(){
 
         Route::get('verify-login/{token}', [AuthController::class, 'verifyLogin'])->name('verify-login');
         Route::view('magic-login', 'dashboard.user.magiclogin')->name('magic.login');
-        Route::post('login', [AuthController::class, 'magicLogin'])->name('magic.login');
+        Route::post('login', [AuthController::class, 'magicLogin'])->name('post.magic.login');
   });
 
   Route::middleware(['auth:customer','verified_user'])->group(function(){
