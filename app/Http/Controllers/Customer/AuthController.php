@@ -120,7 +120,7 @@ class AuthController extends Controller
     public function magicLogin(Request $request)
     {
         $data = $request->validate([
-            'email' => ['required', 'email', 'exists:users,email'],
+            'email' => ['required', 'email', 'exists:customers,email'],
         ]);
         Customer::whereEmail($data['email'])->first()->sendLoginLink();
         session()->flash('success', true);

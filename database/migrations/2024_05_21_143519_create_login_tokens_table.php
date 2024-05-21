@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('login_tokens', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('customer_id');
-            $table->foreign('customer_id')->references('id')->on('users')->cascadeOnDelete();
+            $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
             $table->string('token')->unique();
             $table->timestamp('consumed_at')->nullable();
             $table->timestamp('expires_at');

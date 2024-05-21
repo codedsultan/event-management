@@ -16,7 +16,7 @@
             @if(!session()->has('success'))
 
                   <h4>User Login</h4><hr>
-                  <form action="{{ route('user.magic.login') }}" method="post" autocomplete="off">
+                  <form action="{{ route('user.post.magic.login') }}" method="post" autocomplete="off">
                     @if (Session::get('fail'))
                         <div class="alert alert-danger">
                             {{ Session::get('fail') }}
@@ -45,6 +45,7 @@
 
                   </form>
             @else
+                <h4>Login link sent</h4><hr>
                 <p>Please click the link sent to your email to finish logging in.</p>
             @endif
 

@@ -41,6 +41,9 @@
                         <a href="{{ route('user.forgot.password.form') }}">Forgot Password</a>
                         <a href="{{ route('user.register') }}">Create new Account</a>
                      </div>
+                     <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ route('user.magic.login') }}">No password? Click here Login with only email.</a>
+                     </div>
                       <div class="form-group mt-2">
                           <button type="submit" class="btn btn-primary">Login</button>
                       </div>
