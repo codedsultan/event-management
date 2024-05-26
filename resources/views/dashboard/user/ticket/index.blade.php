@@ -20,7 +20,7 @@
   <thead>
     <tr>
       <th >Code</th>
-      <!-- <th >Description</th> -->
+      <th >Event</th>
       <th >Start Date</th>
       <th >End Date</th>
       <!-- <th >Email</th> -->
@@ -33,6 +33,10 @@
     <tr>
       <td>
         <a href="#">{{$ticket->number}}</a>
+      </td>
+
+      <td>
+        {{$ticket->ticket->event->title}}
       </td>
       <td>{{now()->parse($ticket->ticket->event->start_date)->format('M d Y')}}</td>
       <td>{{now()->parse($ticket->ticket->event->end_date)->format('M d Y')}}</td>
@@ -53,9 +57,9 @@
               <a class="dropdown-item" href="{{route('user.ticket.edit',$ticket->id)}}">Transfer Ticket</a>
             </li>
         @endif
-            <li>
+            <!-- <li>
               <a class="dropdown-item" href="#">Preview</a>
-            </li>
+            </li> -->
           </ul>
         </div>
       </td>

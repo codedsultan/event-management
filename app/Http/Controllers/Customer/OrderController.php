@@ -37,7 +37,9 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        $order=Order::find($id);
+        $order=Order::with('cart.ticket.event')->find($id);
+
+        // dd($order);
         return view('dashboard.user.order.show')->with('order',$order);
     }
 

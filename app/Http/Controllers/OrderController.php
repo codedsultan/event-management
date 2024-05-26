@@ -64,7 +64,7 @@ class OrderController extends Controller
                 request()->session()->flash('error','Cart is Empty !');
                 return back();
             }
-            $user = Customer::firstOrCreate(['email' =>  $data['email']]);
+            $user = Customer::firstOrCreate(['email' =>  $data['email'],'email_verified_at' => now()]);
             Cart::where('session_id', Session::get('cart'))->where('order_id', null)->where('vendor_id',$vendor)->update(['customer_id' => $user->id]);
         }
 

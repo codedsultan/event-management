@@ -15,11 +15,11 @@
 
 </div>
 
-<div class="table-responsive mt-10 border">
+<div class=" mt-10 border">
 <table class="table table-hover table-striped table-borderless">
   <thead>
     <tr>
-      <th >Number</th>
+      <th >#</th>
       <!-- <th >Description</th> -->
       <th >Quantity</th>
       <th >Total</th>
@@ -50,11 +50,11 @@
           <ul class="dropdown-menu">
           @if($order->payment_status === 'unpaid')
             <li>
-              <a class="dropdown-item" href="{{route('stripe.checkout', ['price' => $order->total_amount, 'order' => $order->order_number, 'order_id' => $order->id])}}">Make Payment</a>
+              <a class="dropdown-item" href="{{route('stripe.checkout', ['customer_email' => auth()->guard('customer')->user()->email,'price' => $order->total_amount, 'order' => $order->order_number, 'order_id' => $order->id, 'vendor_id' => $order->vendor_id])}}">Make Payment</a>
             </li>
         @endif
             <li>
-              <a class="dropdown-item" href="#">Preview</a>
+              <a class="dropdown-item" href="{{route('user.order.show', ['order' => $order->id])}}">Preview</a>
             </li>
           </ul>
         </div>

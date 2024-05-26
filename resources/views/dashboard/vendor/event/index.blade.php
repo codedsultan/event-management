@@ -39,10 +39,10 @@
       <td>{{now()->parse($event->end_date)->format('M d Y')}}</td>
       <td>{{$event->tickets->count()}}</td>
       <td>
-        <article id="content-copy" style="display: none;">
+        <article id="{{'content-copy-'. $event->id}}" style="display: none;">
             {{ route('event.show',$event->id) }}
         </article>
-        <button id="btn-copy" class="btn btn-default">Share link</button>
+        <button id="{{'btn-copy-'. $event->id}}" class="btn btn-default">Share link</button>
 
         <!-- <div class="dropdown">
           <button class="btn btn-default dropdown-toggle" type="button"
@@ -87,14 +87,27 @@
 @endsection
 
 @push('scripts')
-<script>
-    const copyButton = document.getElementById('btn-copy');
+<script type=text/javascript>
+    var events = {!! json_encode($events) !!};
+    console.log(events.data)
+
+    events.data.forEach(element => {
+        const copyButton = document.getElementById('btn-copy-'+ element.id);
     copyButton.addEventListener('click', (event) => {
         // getting the text content that we want to copy
-        const content = document.getElementById('content-copy').textContent;
+        const content = document.getElementById('content-copy-'+ element.id).textContent;
         // loading the content into our clipboard
-        navigator.clipboard.writeText(content);
+        navigator.clipboard.writeText(content).then(() => {
+        alert("successfully copied");
+      })
+      .catch(() => {
+        alert("something went wrong");
+      });
 })
+    });
+
 </script>
 
 @endpush
+
+

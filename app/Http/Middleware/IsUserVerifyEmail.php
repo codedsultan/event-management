@@ -19,8 +19,9 @@ class IsUserVerifyEmail
     public function handle(Request $request, Closure $next)
     {
         if(Auth::guard('customer')->user()->email_verified_at === null){
+            Auth::guard('customer')->user()->sendVerificationLink();
             Auth::guard('customer')->logout();
-            return redirect()->route('customer.login')->with('fail','You need to confirm your account, we have sent you an activation link, please check your email.');
+            return redirect()->route('user.login')->with('fail','You need to confirm your account, we have sent you an activation link, please check your email.');
         }
         return $next($request);
     }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Vendor\ApiKeysController;
 use App\Http\Controllers\Vendor\AuthController;
 use App\Http\Controllers\Vendor\BookingController;
 use App\Http\Controllers\Vendor\DashboardController;
@@ -59,6 +60,11 @@ Route::prefix('vendor')->name('vendor.')->group(function(){
         Route::get('/events/{event}/tickets', [TicketController::class, 'index'])->name('tickets');
         Route::get('/events/{event}/tickets/create', [TicketController::class, 'create'])->name('create.tickets');
         Route::post('/events/{event}/tickets', [TicketController::class, 'store'])->name('store.tickets');
+
+        Route::get('/api-key', [ApiKeysController::class, 'index'])->name('stripe.key.index');
+        Route::get('/api-key/create', [ApiKeysController::class, 'create'])->name('stripe.key.create');
+        Route::post('/api-key', [ApiKeysController::class, 'store'])->name('stripe.key.store');
+        Route::delete('/api-key/delete/{key}', [ApiKeysController::class, 'delete'])->name('stripe.key.delete');
     });
 
     Route::controller(InvoicePaymentController::class)->group(function(){
