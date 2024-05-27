@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [EventController::class, 'index'])->name('home');
 Route::get('/events', [EventController::class, 'all'])->name('events');
-Route::get('/events/{id}', [EventController::class, 'show'])->name('event.show');
+Route::get('/events/{slug}', [EventController::class, 'show'])->name('event.show');
 Route::get('/iframe/events', [EventController::class, 'iframe'])->name('iframe');
 
 //Cart section

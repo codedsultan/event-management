@@ -40,7 +40,7 @@
 
 
                 <a
-                    href="{{route('event.show',$event->id)}}"
+                    href="{{route('event.show',$event->slug)}}"
                     class="btn btn-primary"
                 >
                     Learn More

@@ -20,8 +20,8 @@ class EventController extends Controller
         return view('event.index',compact('events'));
     }
 
-    public function show($id){
-        $event = Event::where('id',$id)->with('tickets')->first();
+    public function show($slug){
+        $event = Event::where('slug',$slug)->with('tickets')->first();
         return view('event.show',compact('event'));
     }
 
