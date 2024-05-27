@@ -30,6 +30,7 @@
                 <ul class="navbar-nav me-auto mb-0">
                     <li class="nav-item">
                     <a class="nav-link" aria-current="page" href="/">Home</a>
+                    <a class="nav-link" aria-current="page" href="{{ route('events') }}">Events</a>
                     @if(Auth::guard('customer')->check())
                         <a class="nav-link" aria-current="page" href="{{ route('user.home') }}">Dashboard</a>
 

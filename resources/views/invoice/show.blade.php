@@ -77,7 +77,7 @@
                 <img src="{{ asset('logo.png') }}" alt="laravel daily"  />
             </td>
             <td class="w-half">
-                <h2>Invoice ID: {{$invoice->number}}</h2>
+                <h4>Invoice #: {{$invoice->number}}</h4>
             </td>
         </tr>
     </table>
@@ -85,12 +85,12 @@
         <table class="">
             <tr>
                 <td class="w-half">
-                    <div><h4>To:</h4></div>
-                    <div>John Doe</div>
+                    <div><h5>To:</h5></div>
+                    <div>{{$invoice->vendor->name}}</div>
                     <!-- <div>123 Acme Str.</div> -->
                 </td>
                 <td class="w-half">
-                    <div><h4>From:</h4></div>
+                    <div><h5>From:</h5></div>
                     <div>Smoke Box</div>
                     <div>USA</div>
                 </td>

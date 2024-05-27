@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\MagicLoginLink;
+use Illuminate\Support\Facades\URL;
 
 class Customer extends Authenticatable
 {
@@ -23,6 +24,7 @@ class Customer extends Authenticatable
         'name',
         'email',
         'password',
+        'email_verified_at'
     ];
 
     /**
@@ -69,5 +71,37 @@ class Customer extends Authenticatable
 
         Mail::to($this->email)->queue(new MagicLoginLink($plaintext, $token->expires_at));
         // dd($this->email);
+    }
+
+    public  function sendVerificationLink()
+    {
+        $token = $this->id.hash('sha256', Str::random(120));
+        $verifyURL = URL::temporarySignedRoute('user.verify', now()->addMinutes(15), [
+            'token' => $token,
+        ]);
+        // route('user.verify',['token'=>$token,'service'=>'Email_verification']);
+        VerifyUser::create([
+            'user_id'=>$this->id,
+            'user_type' => Customer::class,
+            'token'=>$token,
+        ]);
+
+        $message = 'Dear <b>'.$this->name.'</b>';
+        $message.= 'Thanks for signing up, we just need you to verify your email address to complete setting up your account.';
+
+        $mail_data = [
+            'recipient'=>$this->email,
+            'fromEmail'=>env('APP_EMAIL','example@site.com'),
+            'fromName'=>env('APP_NAME'),
+            'subject'=>'Email Verification',
+            'body'=>$message,
+            'actionLink'=>$verifyURL,
+        ];
+
+        Mail::send('email-template', $mail_data, function($message) use ($mail_data){
+                   $message->to($mail_data['recipient'])
+                           ->from($mail_data['fromEmail'], $mail_data['fromName'])
+                           ->subject($mail_data['subject']);
+        });
     }
 }

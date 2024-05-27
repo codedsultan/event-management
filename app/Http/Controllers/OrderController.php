@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderNotification;
 use Illuminate\Http\Request;
 use App\Models\Cart;
 use App\Models\Customer;
@@ -12,6 +13,7 @@ use Helper;
 use Illuminate\Support\Str;
 // use App\Notifications\StatusNotification;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Session;
 
@@ -64,7 +66,7 @@ class OrderController extends Controller
                 request()->session()->flash('error','Cart is Empty !');
                 return back();
             }
-            $user = Customer::firstOrCreate(['email' =>  $data['email']]);
+            $user = Customer::firstOrCreate(['email' =>  $data['email'],'email_verified_at' => now()]);
             Cart::where('session_id', Session::get('cart'))->where('order_id', null)->where('vendor_id',$vendor)->update(['customer_id' => $user->id]);
         }
 
@@ -93,8 +95,9 @@ class OrderController extends Controller
         // ];
         // Notification::send($users, new StatusNotification($details));
 
+        $payment_url = route('stripe.checkout', ['customer_email' => $user->email,'price' => $order->total_amount, 'order' => $order->order_number, 'order_id' => $order->id, 'vendor_id' => $order->vendor_id]);
         Cart::where('customer_id', $user->id)->where('order_id', null)->where('vendor_id',$vendor)->update(['order_id' => $order->id]);
-
+        // Mail::to($user->email)->queue(new OrderNotification($order->id,$payment_url,Helper::totalVendorCartPrice('',$vendor),$qty,$order_data['order_number']));
         request()->session()->flash('success','Your ticket successfully placed in order');
 
         return redirect()->route('stripe.checkout', ['customer_email' => $user->email,'price' => $order->total_amount, 'order' => $order->order_number, 'order_id' => $order->id, 'vendor_id' => $order->vendor_id]);

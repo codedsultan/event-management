@@ -17,7 +17,7 @@ return new class extends Migration
             $table->foreign('customer_id')->references('id')->on('customers')->cascadeOnDelete();
             $table->string('token')->unique();
             $table->timestamp('consumed_at')->nullable();
-            $table->timestamp('expires_at');
+            $table->timestamp('expires_at')->nullable();
             $table->timestamps();
         });
     }

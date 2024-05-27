@@ -18,6 +18,12 @@
       <li class="list-group-item list-group-item-action border-bottom w-auto me-2">
         <a href="{{route('vendor.events')}}">Events</a>
       </li>
+
+      <li class="list-group-item list-group-item-action border-bottom w-auto me-2">
+        <a href="{{route('vendor.stripe.key.index')}}">Stripe</a>
+      </li>
+
+
       <!-- <li class="list-group-item list-group-item-action border-bottom w-auto me-2 ">
         <a href="#">Tickets</a>
       </li> -->

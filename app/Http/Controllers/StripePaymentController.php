@@ -86,7 +86,7 @@ class StripePaymentController extends Controller
                     $product->quantity_available -= $cart->quantity;
                     $product->save();
 
-                    for($i = 0; $i <= $cart->quantity; $i++){
+                    for($i = 1; $i <= $cart->quantity; $i++){
                        $ticket =  new CustomerTicket();
                        $ticket->customer_id = $cart->customer_id;
                        $ticket->ticket_id = $cart->ticket_id;

@@ -45,7 +45,7 @@ class InvoicePaymentController extends Controller
         $redirectUrl = route('vendor.stripe.checkout.success').'?session_id={CHECKOUT_SESSION_ID}';
         $response =  $stripe->checkout->sessions->create([
                 'success_url' => $redirectUrl,
-                'customer_email' => 'demo@gmail.com',
+                'customer_email' => auth()->guard('vendor')->user()->email,
                 'payment_method_types' => ['link', 'card'],
                 'line_items' => [
                     [

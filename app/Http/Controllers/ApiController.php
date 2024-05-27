@@ -10,7 +10,7 @@ class ApiController extends Controller
 {
     public function index(Event $event)
     {
-        $events = Event::orderBy('id','desc')->paginate(10);
+        $events = Event::orderBy('id','desc')->paginate(3);
 
         return EventResource::collection($events);
     }

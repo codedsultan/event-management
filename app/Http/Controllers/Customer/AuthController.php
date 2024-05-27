@@ -48,8 +48,8 @@ class AuthController extends Controller
 
         $mail_data = [
             'recipient'=>$request->email,
-            'fromEmail'=>$request->email,
-            'fromName'=>$request->name,
+            'fromEmail'=>env('APP_EMAIL','example@site.com'),
+            'fromName'=>env('APP_NAME'),
             'subject'=>'Email Verification',
             'body'=>$message,
             'actionLink'=>$verifyURL,
@@ -93,7 +93,7 @@ class AuthController extends Controller
     public function verify(Request $request){
         $token = $request->token;
         $verifyUser = VerifyUser::where('token', $token)->with('user')->first();
-
+        abort_unless($request->hasValidSignature() && !is_null($verifyUser), 401);
         if(!is_null($verifyUser)){
             $user = $verifyUser->user;
 
